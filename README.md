@@ -1,4 +1,4 @@
-# com-zipwhip-widget-svg2gcode
+# com-zipwhip-widget-svg2gcode-pdg
 This widget lets you import an SVG file and generate Gcode from it.
 
 ![alt text](screenshot.png "Screenshot")
@@ -11,7 +11,7 @@ not conflict with other ChiliPeppr objects.
 
 | Item                  | Value           |
 | -------------         | ------------- | 
-| ID                    | com-zipwhip-widget-svg2gcode |
+| ID                    | com-zipwhip-widget-svg2gcode-pdg |
 | Name                  | Widget / svg2gcode |
 | Description           | This widget lets you import an SVG file and generate Gcode from it. |
 | chilipeppr.load() URL | https://yuskegoto.github.io/widget-svg2gcode-yg/auto-generated-widget.html |
@@ -39,11 +39,11 @@ chilipeppr.load(
     // Callback after workspace loaded into #pnlWorkspace
     // Now use require.js to get reference to instantiated workspace
     cprequire(
-      ["inline:com-zipwhip-widget-svg2gcode"], // the id you gave your workspace
-      function(myComZipwhipWidgetSvg2gcode) {
+      ["inline:com-zipwhip-widget-svg2gcode-pdg"], // the id you gave your workspace
+      function(myComZipwhipWidgetSvg2gcodePdg) {
         // Callback that is passed reference to the newly loaded workspace
-        console.log("Widget / svg2gcode just got loaded.", myComZipwhipWidgetSvg2gcode);
-        myComZipwhipWidgetSvg2gcode.init();
+        console.log("Widget / svg2gcode just got loaded.", myComZipwhipWidgetSvg2gcodePdg);
+        myComZipwhipWidgetSvg2gcodePdg.init();
       }
     );
   }
@@ -66,7 +66,7 @@ To better understand how ChiliPeppr's subscribe() method works see amplify.js's 
           </tr>
       </thead>
       <tbody>
-      <tr valign="top"><td>/com-zipwhip-widget-svg2gcodedidDrop</td><td>We will publish this if we get an onDropped event and it is for an SVG file. This signal would likely be listened to by the workspace so it can actively show the widget to the user if they drop an SVG file into the workspace. The payload contains the file info like {name: "myfile.svg", lastModified: "1/10/2017 12:12PM"}</td></tr>    
+      <tr valign="top"><td>/com-zipwhip-widget-svg2gcode-pdgdidDrop</td><td>We will publish this if we get an onDropped event and it is for an SVG file. This signal would likely be listened to by the workspace so it can actively show the widget to the user if they drop an SVG file into the workspace. The payload contains the file info like {name: "myfile.svg", lastModified: "1/10/2017 12:12PM"}</td></tr>    
       </tbody>
   </table>
 
@@ -101,7 +101,7 @@ To better understand how ChiliPeppr's subscribe() method works see amplify.js's 
           </tr>
       </thead>
       <tbody>
-      <tr valign="top"><td>/com-zipwhip-widget-svg2gcode/com-chilipeppr-widget-3dviewer/request3dObject</td><td>This gives us back the 3d object from the 3d viewer so we can add Three.js objects to it.</td></tr>    
+      <tr valign="top"><td>/com-zipwhip-widget-svg2gcode-pdg/com-chilipeppr-widget-3dviewer/request3dObject</td><td>This gives us back the 3d object from the 3d viewer so we can add Three.js objects to it.</td></tr>    
       </tbody>
   </table>
 
@@ -118,7 +118,7 @@ To better understand how ChiliPeppr's publish() method works see amplify.js's do
           </tr>
       </thead>
       <tbody>
-      <tr valign="top"><td>/com-zipwhip-widget-svg2gcode/com-chilipeppr-widget-3dviewer/recv3dObject</td><td>By subscribing to this we get the callback when we /request3dObject and thus we can grab the reference to the 3d object from the 3d viewer and do things like addScene() to it with our Three.js objects.</td></tr><tr valign="top"><td>/com-zipwhip-widget-svg2gcode/com-chilipeppr-elem-dragdrop/ondropped</td><td>We subscribe to this signal at a higher priority to intercept the signal, double check if it is an SVG file and if so, we do not let it propagate by returning false. That way the 3D Viewer, Gcode widget, or other widgets will not get the SVG file drag/drop events because they will not know how to interpret the SVG file.</td></tr>    
+      <tr valign="top"><td>/com-zipwhip-widget-svg2gcode-pdg/com-chilipeppr-widget-3dviewer/recv3dObject</td><td>By subscribing to this we get the callback when we /request3dObject and thus we can grab the reference to the 3d object from the 3d viewer and do things like addScene() to it with our Three.js objects.</td></tr><tr valign="top"><td>/com-zipwhip-widget-svg2gcode-pdg/com-chilipeppr-elem-dragdrop/ondropped</td><td>We subscribe to this signal at a higher priority to intercept the signal, double check if it is an SVG file and if so, we do not let it propagate by returning false. That way the 3D Viewer, Gcode widget, or other widgets will not get the SVG file drag/drop events because they will not know how to interpret the SVG file.</td></tr>    
       </tbody>
   </table>
 
@@ -135,7 +135,7 @@ The table below shows, in order, the methods and properties inside the workspace
           </tr>
       </thead>
       <tbody>
-      <tr valign="top"><td>id</td><td>string</td><td>"com-zipwhip-widget-svg2gcode"<br><br>The ID of the widget. You must define this and make it unique.</td></tr><tr valign="top"><td>name</td><td>string</td><td>"Widget / svg2gcode"</td></tr><tr valign="top"><td>desc</td><td>string</td><td>"This widget lets you import an SVG file and generate Gcode from it."</td></tr><tr valign="top"><td>url</td><td>string</td><td>"https://yuskegoto.github.io/widget-svg2gcode-yg/auto-generated-widget.html"</td></tr><tr valign="top"><td>fiddleurl</td><td>string</td><td>"https://github.com/yuskegoto/widget-svg2gcode-yg"</td></tr><tr valign="top"><td>githuburl</td><td>string</td><td>"https://github.com/yuskegoto/widget-svg2gcode-yg"</td></tr><tr valign="top"><td>testurl</td><td>string</td><td>"https:/widget.html"</td></tr><tr valign="top"><td>publish</td><td>object</td><td>Please see docs above.<br><br>Define the publish signals that this widget/element owns or defines so that
+      <tr valign="top"><td>id</td><td>string</td><td>"com-zipwhip-widget-svg2gcode-pdg"<br><br>The ID of the widget. You must define this and make it unique.</td></tr><tr valign="top"><td>name</td><td>string</td><td>"Widget / svg2gcode"</td></tr><tr valign="top"><td>desc</td><td>string</td><td>"This widget lets you import an SVG file and generate Gcode from it."</td></tr><tr valign="top"><td>url</td><td>string</td><td>"https://yuskegoto.github.io/widget-svg2gcode-yg/auto-generated-widget.html"</td></tr><tr valign="top"><td>fiddleurl</td><td>string</td><td>"https://github.com/yuskegoto/widget-svg2gcode-yg"</td></tr><tr valign="top"><td>githuburl</td><td>string</td><td>"https://github.com/yuskegoto/widget-svg2gcode-yg"</td></tr><tr valign="top"><td>testurl</td><td>string</td><td>"https:/widget.html"</td></tr><tr valign="top"><td>publish</td><td>object</td><td>Please see docs above.<br><br>Define the publish signals that this widget/element owns or defines so that
 other widgets know how to subscribe to them and what they do.</td></tr><tr valign="top"><td>subscribe</td><td>object</td><td>Please see docs above.<br><br>Define the subscribe signals that this widget/element owns or defines so that
 other widgets know how to subscribe to them and what they do.</td></tr><tr valign="top"><td>foreignPublish</td><td>object</td><td>Please see docs above.<br><br>Document the foreign publish signals, i.e. signals owned by other widgets
 or elements, that this widget/element publishes to.</td></tr><tr valign="top"><td>foreignSubscribe</td><td>object</td><td>Please see docs above.<br><br>Document the foreign subscribe signals, i.e. signals owned by other widgets
