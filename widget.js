@@ -38,7 +38,7 @@ requirejs.config({
     }
 });
 
-cprequire_test(["inline:com-zipwhip-widget-svg2gcode-pdg"], function(myWidget) {
+cprequire_test(["inline:com-widget-svg2gcode-yg"], function(myWidget) {
 
     // Test this element. This code is auto-removed by the chilipeppr.load()
     // when using this widget in production. So use the cpquire_test to do things
@@ -131,12 +131,12 @@ cprequire_test(["inline:com-zipwhip-widget-svg2gcode-pdg"], function(myWidget) {
 } /*end_test*/ );
 
 // This is the main definition of your widget. Give it a unique name.
-cpdefine("inline:com-zipwhip-widget-svg2gcode-pdg", ["chilipeppr_ready", "Snap", "Clipper" ], function() {
+cpdefine("inline:com-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", "Clipper" ], function() {
     return {
         /**
          * The ID of the widget. You must define this and make it unique.
          */
-        id: "com-zipwhip-widget-svg2gcode-pdg", // Make the id the same as the cpdefine id
+        id: "com-widget-svg2gcode-yg", // Make the id the same as the cpdefine id
         name: "Widget / svg2gcode", // The descriptive name of your widget.
         desc: "This widget lets you import an SVG file and generate Gcode from it.",
         url: "(auto fill by runme.js)",       // The final URL of the working widget as a single HTML file with CSS and Javascript inlined. You can let runme.js auto fill this if you are using Cloud9.
