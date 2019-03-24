@@ -16,20 +16,20 @@
     <style type='text/css'>
 /* CSS for ChiliPeppr Widget */
 
-#com-zipwhip-widget-svg2gcode {
+#com-zipwhip-widget-svg2gcode-yg {
     
 }
-#com-zipwhip-widget-svg2gcode .panel-body{
+#com-zipwhip-widget-svg2gcode-yg .panel-body{
     /*padding:6px 14px;*/
     max-height:330px;  
     overflow-y:auto;
 }
 
-#com-zipwhip-widget-svg2gcode .nav-tabs>li>a {
+#com-zipwhip-widget-svg2gcode-yg .nav-tabs>li>a {
     padding: 2px 6px;
 }
 
-#com-zipwhip-widget-svg2gcode .tab-pane {
+#com-zipwhip-widget-svg2gcode-yg .tab-pane {
     padding-top:10px;
 }
 
@@ -39,28 +39,28 @@
     border:0;
 }
 
-div.com-zipwhip-widget-svg2gcode-textbox {
+div.com-zipwhip-widget-svg2gcode-yg-textbox {
     width:130px;
     z-index:1;
 }
-.com-zipwhip-widget-svg2gcode-textbox .input-group .form-control {
+.com-zipwhip-widget-svg2gcode-yg-textbox .input-group .form-control {
     font-size:11px;
     padding:0 0 0 8px;
     height:26px;
 }
-.com-zipwhip-widget-svg2gcode-textbox .input-group .input-group-addon {
+.com-zipwhip-widget-svg2gcode-yg-textbox .input-group .input-group-addon {
     padding:0;   
 }
 
-#com-zipwhip-widget-svg2gcode-alignbox .input-group.input-group-small {
+#com-zipwhip-widget-svg2gcode-yg-alignbox .input-group.input-group-small {
     width:82px;
 }
-#com-zipwhip-widget-svg2gcode-alignbox .input-group.input-group-small .input-group-addon {
+#com-zipwhip-widget-svg2gcode-yg-alignbox .input-group.input-group-small .input-group-addon {
     font-size:11px;
     padding:0 6px;
 }
 
-#com-zipwhip-widget-svg2gcode-alignbox .input-group-small .form-control {
+#com-zipwhip-widget-svg2gcode-yg-alignbox .input-group-small .form-control {
     font-size:11px;
     padding:0 0 0 8px;
     margin:0;
@@ -110,7 +110,7 @@ requirejs.config({
     }
 });
 
-cprequire_test(["inline:com-zipwhip-widget-svg2gcode"], function(myWidget) {
+cprequire_test(["inline:com-zipwhip-widget-svg2gcode-yg"], function(myWidget) {
 
     // Test this element. This code is auto-removed by the chilipeppr.load()
     // when using this widget in production. So use the cpquire_test to do things
@@ -203,12 +203,12 @@ cprequire_test(["inline:com-zipwhip-widget-svg2gcode"], function(myWidget) {
 } /*end_test*/ );
 
 // This is the main definition of your widget. Give it a unique name.
-cpdefine("inline:com-zipwhip-widget-svg2gcode", ["chilipeppr_ready", "Snap", "Clipper" ], function() {
+cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", "Clipper" ], function() {
     return {
         /**
          * The ID of the widget. You must define this and make it unique.
          */
-        id: "com-zipwhip-widget-svg2gcode", // Make the id the same as the cpdefine id
+        id: "com-zipwhip-widget-svg2gcode-yg", // Make the id the same as the cpdefine id
         name: "Widget / svg2gcode", // The descriptive name of your widget.
         desc: "This widget lets you import an SVG file and generate Gcode from it.",
         url: "https://yuskegoto.github.io/widget-svg2gcode-yg/auto-generated-widget.html",       // The final URL of the working widget as a single HTML file with CSS and Javascript inlined. You can let runme.js auto fill this if you are using Cloud9.
@@ -2301,7 +2301,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode", ["chilipeppr_ready", "Snap", "Cl
 <body>
     
 
-    <div id="com-zipwhip-widget-svg2gcode" class="panel panel-default">
+    <div id="com-zipwhip-widget-svg2gcode-yg" class="panel panel-default">
         <div class="panel-heading ">
 
             <div class="btn-toolbar pull-right" role="toolbar">
@@ -2325,18 +2325,18 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode", ["chilipeppr_ready", "Snap", "Cl
 
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
-                <li class="active"><a href="#com-zipwhip-widget-svg2gcode-tab1" role="tab" data-toggle="tab">Render</a>
+                <li class="active"><a href="#com-zipwhip-widget-svg2gcode-yg-tab1" role="tab" data-toggle="tab">Render</a>
                 </li>
-                <li class="xactive"><a href="#com-zipwhip-widget-svg2gcode-tab2" role="tab" data-toggle="tab">Gcode</a></li>
-                <!--<li><a href="#com-zipwhip-widget-svg2gcode-tab3" role="tab" data-toggle="tab">Dispenser</a></li>-->
-                <!--<li><a href="#com-zipwhip-widget-svg2gcode-tab4" role="tab" data-toggle="tab">Laser</a></li>-->
+                <li class="xactive"><a href="#com-zipwhip-widget-svg2gcode-yg-tab2" role="tab" data-toggle="tab">Gcode</a></li>
+                <!--<li><a href="#com-zipwhip-widget-svg2gcode-yg-tab3" role="tab" data-toggle="tab">Dispenser</a></li>-->
+                <!--<li><a href="#com-zipwhip-widget-svg2gcode-yg-tab4" role="tab" data-toggle="tab">Laser</a></li>-->
             </ul>
 
             <!-- Tab panes -->
             <div class="tab-content">
 
                 <!-- Tab 1 -->
-                <div class="tab-pane active" id="com-zipwhip-widget-svg2gcode-tab1">
+                <div class="tab-pane active" id="com-zipwhip-widget-svg2gcode-yg-tab1">
 
                     <p style="margin-top:0px;margin-bottom:0;padding-bottom:0;">Paste/Drag SVG Code Here</p>
                     <a href="javascript:" class="load-logo" style="font-size:11px;margin-top:0;padding-top:0;">Load Example ChiliPeppr Logo</a>
@@ -2530,7 +2530,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode", ["chilipeppr_ready", "Snap", "Cl
                 </div>
 
                 <!-- Tab 2 -->
-                <div class="tab-pane xactive" id="com-zipwhip-widget-svg2gcode-tab2">
+                <div class="tab-pane xactive" id="com-zipwhip-widget-svg2gcode-yg-tab2">
 
                     <div class="form-group">
                         <p style="margin-bottom:0">Mode</p>
@@ -2601,7 +2601,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode", ["chilipeppr_ready", "Snap", "Cl
     </div>
     
     <!-- Width Adjust Textbox -->
-    <div id="com-zipwhip-widget-svg2gcode-widthbox" class="hidden form-group com-zipwhip-widget-svg2gcode-textbox div-width-box" style="position:absolute;top:400px;left:10px;">
+    <div id="com-zipwhip-widget-svg2gcode-yg-widthbox" class="hidden form-group com-zipwhip-widget-svg2gcode-yg-textbox div-width-box" style="position:absolute;top:400px;left:10px;">
         <div class="input-group">
             <input type="number" step="1" class="form-control input-widthbox" placeholder="Width">
             <div class="input-group-addon hidden" xstyle="padding:0 10px">
@@ -2631,7 +2631,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode", ["chilipeppr_ready", "Snap", "Cl
     </div>
     
     <!-- Height Adjust Textbox -->
-    <div id="com-zipwhip-widget-svg2gcode-heightbox" class="hidden form-group com-zipwhip-widget-svg2gcode-textbox div-height-box" style="position:absolute;top:450px;left:10px;">
+    <div id="com-zipwhip-widget-svg2gcode-yg-heightbox" class="hidden form-group com-zipwhip-widget-svg2gcode-yg-textbox div-height-box" style="position:absolute;top:450px;left:10px;">
         <div class="input-group">
             <input type="number" step="1" class="form-control input-heightbox" placeholder="Height">
             <div class="input-group-addon hidden" xstyle="padding:0 10px">
@@ -2660,7 +2660,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode", ["chilipeppr_ready", "Snap", "Cl
         </div>
     </div>
 
-    <div id="com-zipwhip-widget-svg2gcode-alignbox" class="hidden" style="position:absolute;top:410px;left:10px;z-index:1;">
+    <div id="com-zipwhip-widget-svg2gcode-yg-alignbox" class="hidden" style="position:absolute;top:410px;left:10px;z-index:1;">
         
         <div class="input-group input-group-small" style="">
             <input type="number" step="1" class="form-control input-x" placeholder="0">
