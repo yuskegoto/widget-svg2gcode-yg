@@ -13,7 +13,8 @@
 var http = require('http'),
   url = require('url'),
   path = require('path'),
-  fs = require('fs');
+  fs = require('fs'),
+  portNo = '8080';
 
 var mimeTypes = {
   "html": "text/html",
@@ -156,7 +157,7 @@ http.createServer(function(req, res) {
   }
 
 // }).listen(process.env.PORT);
-}).listen(8080);
+}).listen(portNo);
 
 String.prototype.regexIndexOf = function(regex, startpos) {
     var indexOf = this.substring(startpos || 0).search(regex);
@@ -205,7 +206,7 @@ var init = function() {
   testUrl = github.rawurl;
   testUrlNoSsl = github.rawurl.replace(RegExp('https'), 'http');
   editUrl = github.url;
-  localTestUrl = 'http://localhost:8080/' + fileHtmlPath;
+  localTestUrl = 'http://localhost:' + portNo + '/' + fileHtmlPath;
 }
 
 var isEvaled = false;
