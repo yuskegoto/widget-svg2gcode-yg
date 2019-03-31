@@ -47,8 +47,9 @@ http.createServer(function(req, res) {
     notes += "<p>Generated a new " + fileAutoGeneratePath + " file...</p>";
     //pushToGithub();
     // pushToGithubSync();
-    pushToGithubAsync();
-    notes += "<p>Pushed updates to Github...</p>";
+
+    // pushToGithubAsync();
+    // notes += "<p>Pushed updates to Github...</p>";
 
     //html = html + htmlDocs;
     var finalHtml = htmlDocs.replace(/<!-- pre-notes -->/, notes);
@@ -164,10 +165,11 @@ String.prototype.regexIndexOf = function(regex, startpos) {
     return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
 }
 
-var fileAutoGeneratePath = "auto-generated-widget.html"
-var fileJsPath = "widget.js"
-var fileCssPath = "widget.css"
-var fileHtmlPath = "widget.html"
+var widgetType = 'widget' // 'workspace'
+var fileAutoGeneratePath = "auto-generated-" +  widgetType + ".html"
+var fileJsPath = widgetType + ".js"
+var fileCssPath = widgetType + ".css"
+var fileHtmlPath = widgetType + ".html"
 
 
 // var widgetUrl = 'http://' +

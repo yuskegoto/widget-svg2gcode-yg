@@ -342,19 +342,21 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
 
             // on change which re-reads the svg file and creates the Three.js object
             $('#' + this.id + ' .input-svg').change(this.onChange.bind(this));
-            $('#' + this.id + ' .svg2gcode-cuttype').change(this.onChange.bind(this));
+            // $('#' + this.id + ' .svg2gcode-cuttype').change(this.onChange.bind(this));
             
             // input that just changes gcode, but doesn't have to re-render the svg from scratch
-            $('#' + this.id + ' .svg2gcode-modetype').change(this.onModeTypeChange.bind(this));
-            $('#' + this.id + ' .input-svalue').change(this.generateGcode.bind(this));
-            $('#' + this.id + ' .input-clearance').change(this.generateGcode.bind(this));
-            $('#' + this.id + ' .input-depthcut').change(this.generateGcode.bind(this));
-            $('#' + this.id + ' .input-feedrateplunge').change(this.generateGcode.bind(this));
+            // $('#' + this.id + ' .svg2gcode-modetype').change(this.onModeTypeChange.bind(this));
+            // $('#' + this.id + ' .input-svalue').change(this.generateGcode.bind(this));
+            // $('#' + this.id + ' .input-clearance').change(this.generateGcode.bind(this));
+            // $('#' + this.id + ' .input-depthcut').change(this.generateGcode.bind(this));
+            // $('#' + this.id + ' .input-feedrateplunge').change(this.generateGcode.bind(this));
             $('#' + this.id + ' .input-feedrate').change(this.generateGcode.bind(this));
-            $('#' + this.id + ' .input-inflate').change(this.onInflateChange.bind(this));
+            // $('#' + this.id + ' .input-inflate').change(this.onInflateChange.bind(this));
             
+            // assign button events
+            $('#' + this.id + ' .btn-loadgcode').click(this.loadGcodeToField.bind(this));
             $('#' + this.id + ' .btn-sendgcodetows').click(this.sendGcodeToWorkspace.bind(this));
-            
+
             // debug arrow
             $('#' + this.id + ' .btn-arrow').click(this.drawDebugArrowHelperFor3DToScreenPosition.bind(this));
             $('#' + this.id + ' .btn-test').click(this.debugDrawTestObjects.bind(this));
@@ -387,17 +389,17 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                 
             }
         },
-        onModeTypeChange: function() {
-            this.getSettings();
-            if (this.options.mode == "laser") {
-                 $('#' + this.id + ' .mode-laser').removeClass("hidden");
-                 $('#' + this.id + ' .mode-mill').addClass("hidden");
-            } else {
-                 $('#' + this.id + ' .mode-laser').addClass("hidden");
-                 $('#' + this.id + ' .mode-mill').removeClass("hidden");
-            } 
-            this.generateGcode();
-        },
+        // onModeTypeChange: function() {
+        //     this.getSettings();
+        //     if (this.options.mode == "laser") {
+        //          $('#' + this.id + ' .mode-laser').removeClass("hidden");
+        //          $('#' + this.id + ' .mode-mill').addClass("hidden");
+        //     } else {
+        //          $('#' + this.id + ' .mode-laser').addClass("hidden");
+        //          $('#' + this.id + ' .mode-mill').removeClass("hidden");
+        //     } 
+        //     this.generateGcode();
+        // },
         onRender: function(callback) {
             
             // make sure we have all the 3d viewer pointers correctly received back
@@ -450,96 +452,96 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             this.options["inflate"] = parseFloat($('#' + this.id + ' .input-inflate').val());
             this.options["feedrate"] = $('#' + this.id + ' .input-feedrate').val();
             //console.log("settings:", this.options);    
-            
+
             this.saveOptionsLocalStorage();
         },
         /**
          * Called when user changes inflate value.
          */
-        onInflateChange: function(evt) {
-            console.log("onInflateChange. evt:");
+        // onInflateChange: function(evt) {
+        //     console.log("onInflateChange. evt:");
             
-            this.getSettings();
+        //     this.getSettings();
             
-            if (this.inflateGrp) this.svgGroup.remove(this.inflateGrp);
+        //     if (this.inflateGrp) this.svgGroup.remove(this.inflateGrp);
             
-            if (this.options.inflate != 0) {
-                console.log("user wants to inflate. val:", this.options.inflate);
+        //     if (this.options.inflate != 0) {
+        //         console.log("user wants to inflate. val:", this.options.inflate);
                 
-                // save the original path and make a new one so we can go back to the original
-                if (!('svgGroupOriginal' in this)) {
-                    console.log("creating original store");
-                    // no original stored yet
-                    this.svgParentGroupOriginal = this.svgParentGroup;
-                    this.svgGroupOriginal = this.svgGroup;
-                } else {
-                    console.log("restoring original");
-                    // restore original
-                    this.svgParentGroup = this.svgParentGroupOriginal;
-                    this.svgGroup = this.svgGroupOriginal;
-                }
+        //         // save the original path and make a new one so we can go back to the original
+        //         if (!('svgGroupOriginal' in this)) {
+        //             console.log("creating original store");
+        //             // no original stored yet
+        //             this.svgParentGroupOriginal = this.svgParentGroup;
+        //             this.svgGroupOriginal = this.svgGroup;
+        //         } else {
+        //             console.log("restoring original");
+        //             // restore original
+        //             this.svgParentGroup = this.svgParentGroupOriginal;
+        //             this.svgGroup = this.svgGroupOriginal;
+        //         }
 
-                var grp = this.svgGroup;
+        //         var grp = this.svgGroup;
                 
-                var clipperPaths = [];
+        //         var clipperPaths = [];
                 
-                var that = this;
-                grp.traverse( function(child) {
+        //         var that = this;
+        //         grp.traverse( function(child) {
                     
-                    if (child.name == "inflatedGroup") {
-                        console.log("this is the inflated path from a previous run. ignore.");
-                        return;
-                    }
-                    else if (child.type == "Line") {
+        //             if (child.name == "inflatedGroup") {
+        //                 console.log("this is the inflated path from a previous run. ignore.");
+        //                 return;
+        //             }
+        //             else if (child.type == "Line") {
                         
-                        // let's inflate the path for this line. it may not be closed
-                        // so we need to check that.
+        //                 // let's inflate the path for this line. it may not be closed
+        //                 // so we need to check that.
                         
-                        //var threeObj = that.inflateThreeJsLineShape(child, that.options.inflate);
-                        var clipperPath = that.threeJsVectorArrayToClipperArray(child.geometry.vertices);
-                        clipperPaths.push(clipperPath);
+        //                 //var threeObj = that.inflateThreeJsLineShape(child, that.options.inflate);
+        //                 var clipperPath = that.threeJsVectorArrayToClipperArray(child.geometry.vertices);
+        //                 clipperPaths.push(clipperPath);
                         
-                        // hide for now. we can unhide later if we reset.
-                        //child.visible = false;
-                        child.material.color = 0x000000;
-                        child.material.transparent = true;
-                        child.material.opacity = 0.2;
+        //                 // hide for now. we can unhide later if we reset.
+        //                 //child.visible = false;
+        //                 child.material.color = 0x000000;
+        //                 child.material.transparent = true;
+        //                 child.material.opacity = 0.2;
                         
-                        // for now add to existing object
-                        // eventually replace it
-                        //grp.add(threeObj);
-                    } 
-                    else if (child.type == "Points") {
-                        child.visible = false;
-                    } 
-                    else {
-                        console.log("type of ", child.type, " being skipped");
-                    }
-                });
+        //                 // for now add to existing object
+        //                 // eventually replace it
+        //                 //grp.add(threeObj);
+        //             } 
+        //             else if (child.type == "Points") {
+        //                 child.visible = false;
+        //             } 
+        //             else {
+        //                 console.log("type of ", child.type, " being skipped");
+        //             }
+        //         });
                 
-                console.log("clipperPaths:", clipperPaths);
+        //         console.log("clipperPaths:", clipperPaths);
                 
-                // simplify this set of paths which is a very powerful Clipper call that
-                // figures out holes and path orientations
-                var newClipperPaths = this.simplifyPolygons(clipperPaths);
+        //         // simplify this set of paths which is a very powerful Clipper call that
+        //         // figures out holes and path orientations
+        //         var newClipperPaths = this.simplifyPolygons(clipperPaths);
                 
-                // get the inflated/deflated path
-                var inflatedPaths = this.getInflatePath(newClipperPaths, this.options.inflate);
+        //         // get the inflated/deflated path
+        //         var inflatedPaths = this.getInflatePath(newClipperPaths, this.options.inflate);
                 
-                // we now have a huge array of clipper paths
-                console.log("newClipperPaths:", newClipperPaths);
-                this.inflateGrp = this.drawClipperPaths(inflatedPaths, 0x0000ff, 0.99, 0.01, 0, true, false, "inflatedGroup");
-                //threeObj.name = "inflatedGroup";
+        //         // we now have a huge array of clipper paths
+        //         console.log("newClipperPaths:", newClipperPaths);
+        //         this.inflateGrp = this.drawClipperPaths(inflatedPaths, 0x0000ff, 0.99, 0.01, 0, true, false, "inflatedGroup");
+        //         //threeObj.name = "inflatedGroup";
+        //         //
+        //         //this.svgParentGroup.remove(this.svgGroup);
+        //         //this.svgParentGroup.add(threeObj);
+        //         this.svgGroup.add(this.inflateGrp);
                 
-                //this.svgParentGroup.remove(this.svgGroup);
-                //this.svgParentGroup.add(threeObj);
-                this.svgGroup.add(this.inflateGrp);
+        //         //grp.add(threeObj);
                 
-                //grp.add(threeObj);
-                
-                this.wakeAnimate();
-            }
-        },
+        //         this.wakeAnimate();
+        //     }
+        // },
         simplifyPolygons: function(paths) {
             
             var scale = 10000;
@@ -785,7 +787,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             // get settings
             this.getSettings();
             
-            var g = "(Gcode generated by ChiliPeppr Svg2Gcode Widget)\n";
+            var g = "(Gcode generated by ChiliPeppr-Pendeograph Svg2Gcode Widget)\n";
             //g += "(Text: " + this.mySceneGroup.userData.text  + ")\n";
             g += "G21 (mm)\n";
             
@@ -803,31 +805,33 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                     for (i = 0; i < child.geometry.vertices.length; i++) {
                         var localPt = child.geometry.vertices[i];
                         var worldPt = grp.localToWorld(localPt.clone());
+                        // console.log("localPt: ", localPt)
+                        // console.log("worldPt: ", worldPt)
                         
                         if (i == 0) {
                             // first point in line where we start lasering/milling
                             // move to point
                             
                             // if milling, we need to move to clearance height
-                            if (that.options.mode == "mill") {
-                                if (!isAtClearanceHeight) {
-                                    g += "G0 Z" + that.options.millclearanceheight + "\n";
-                                }
-                            }
+                            // if (that.options.mode == "mill") {
+                            //     if (!isAtClearanceHeight) {
+                            //         g += "G0 Z" + that.options.millclearanceheight + "\n";
+                            //     }
+                            // }
                             
                             // move to start point
                             g += "G0 X" + worldPt.x.toFixed(3) + 
                                 " Y" + worldPt.y.toFixed(3) + "\n";
                             
                             // if milling move back to depth cut
-                            if (that.options.mode == "mill") {
-                                var halfDistance = (that.options.millclearanceheight - that.options.milldepthcut) / 2;
-                                g += "G0 Z" + (that.options.millclearanceheight - halfDistance).toFixed(3)
-                                    + "\n";
-                                g += "G1 F" + that.options.millfeedrateplunge + 
-                                    " Z" + that.options.milldepthcut + "\n";
-                                isAtClearanceHeight = false;
-                            }
+                            // if (that.options.mode == "mill") {
+                            //     var halfDistance = (that.options.millclearanceheight - that.options.milldepthcut) / 2;
+                            //     g += "G0 Z" + (that.options.millclearanceheight - halfDistance).toFixed(3)
+                            //         + "\n";
+                            //     g += "G1 F" + that.options.millfeedrateplunge + 
+                            //         " Z" + that.options.milldepthcut + "\n";
+                            //     isAtClearanceHeight = false;
+                            // }
                             
                         }
                         else {
@@ -835,24 +839,24 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                             // we are in a non-first line so this is normal moving
                             
                             // see if laser or milling
-                            if (that.options.mode == "laser") {
+                            // if (that.options.mode == "laser") {
                                 
-                                // if the laser is not on, we need to turn it on
-                                if (!isLaserOn) {
-                                    if (that.options.laseron == "M3") {
-                                        g += "M3 S" + that.options.lasersvalue;
-                                    } else {
-                                        g += that.options.laseron;
-                                    }
-                                    g += " (laser on)\n";
-                                    isLaserOn = true;
-                                }
-                            } else {
-                                // this is milling. if we are not at depth cut
-                                // we need to get there
+                            //     // if the laser is not on, we need to turn it on
+                            //     if (!isLaserOn) {
+                            //         if (that.options.laseron == "M3") {
+                            //             g += "M3 S" + that.options.lasersvalue;
+                            //         } else {
+                            //             g += that.options.laseron;
+                            //         }
+                            //         g += " (laser on)\n";
+                            //         isLaserOn = true;
+                            //     }
+                            // } else {
+                            //     // this is milling. if we are not at depth cut
+                            //     // we need to get there
                                 
                                 
-                            }
+                            // }
                             
                             // do normal feedrate move
                             var feedrate;
@@ -870,21 +874,21 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                     
                     // make feedrate have to get specified again on next line
                     // if there is one
-                    isFeedrateSpecifiedAlready = false;
+                    // isFeedrateSpecifiedAlready = false;
                     
                     // see if laser or milling
-                    if (that.options.mode == "laser") {
-                        // turn off laser at end of line
-                        isLaserOn = false;
-                        if (that.options.laseron == "M3")
-                            g += "M5 (laser off)\n";
-                        else
-                            g += "M9 (laser off)\n";
-                    } else {
-                        // milling. move back to clearance height
-                        g += "G0 Z" + that.options.millclearanceheight + "\n";
-                        isAtClearanceHeight = true;
-                    }
+                    // if (that.options.mode == "laser") {
+                    //     // turn off laser at end of line
+                    //     isLaserOn = false;
+                    //     if (that.options.laseron == "M3")
+                    //         g += "M5 (laser off)\n";
+                    //     else
+                    //         g += "M9 (laser off)\n";
+                    // } else {
+                    //     // milling. move back to clearance height
+                    //     g += "G0 Z" + that.options.millclearanceheight + "\n";
+                    //     isAtClearanceHeight = true;
+                    // }
                 }
             });
             
@@ -2182,6 +2186,45 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                 this.saveOptionsLocalStorage();
             }
             $(window).trigger("resize");
+        },
+        loadGcodeToField: function(){
+            console.log("load button pushed");
+            var input = document.getElementById('myFile');
+            if (input.files.length !=0){
+                var inputFile = input.files[0];
+                inputURL = window.URL.createObjectURL(inputFile);
+                $.get(inputURL)
+                .then(this.injectSvg);
+            }
+        },
+        injectSvg: function(xmlDoc) {
+            // updateValues();
+    
+            // var svg = $(xmlDoc).find("svg");
+            // console.log(svg);
+            var serializer = new XMLSerializer();
+            var svgString = serializer.serializeToString(xmlDoc);
+            console.log("svg 2 text", svgString);
+            // $('#' + this.id + " .input-svg").val(svgString).prop('disabled', false);
+            $("#path").val(svgString);
+    
+            // auto-update drawing area from canvas size
+            // var style = $("svg").attr("style");
+            // canvasSize = getCanvasSize(style);
+            // canvasWidth = canvasSize.x / scale;
+            // $("#width").val(canvasWidth);
+            // canvasHeight = canvasSize.y / scale;;
+            // $("#height").val(canvasHeight);
+    
+            // update layer name
+            // console.log($("svg").attr("id"));
+            // svgId = $("svg").attr("id");
+            // $("#layer").text(svgId);
+    
+            // update path name
+            // console.log($("path").attr("id"));
+            // var pathId = $("path").attr("id");
+            // $("#pathname").val(pathId);
         },
         /**
          * This method loads the pubsubviewer widget which attaches to our 

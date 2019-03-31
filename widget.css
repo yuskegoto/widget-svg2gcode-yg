@@ -5,7 +5,7 @@
 }
 #com-zipwhip-widget-svg2gcode-yg .panel-body{
     /*padding:6px 14px;*/
-    max-height:330px;  
+    /* max-height:600px;*/
     overflow-y:auto;
 }
 
