@@ -18,6 +18,7 @@ not conflict with other ChiliPeppr objects.
 | Edit URL              | https://github.com/yuskegoto/widget-svg2gcode-yg |
 | Github URL            | https://github.com/yuskegoto/widget-svg2gcode-yg |
 | Test URL              | https://yuskegoto.github.io/widget-svg2gcode-yg/auto-generated-widget.html |
+| Local Test URL        | http://localhost:8080/widget.html |
 
 ## Example Code for chilipeppr.load() Statement
 
