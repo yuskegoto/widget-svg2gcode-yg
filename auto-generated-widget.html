@@ -423,6 +423,9 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             // $('#' + this.id + ' .input-depthcut').change(this.generateGcode.bind(this));
             // $('#' + this.id + ' .input-feedrateplunge').change(this.generateGcode.bind(this));
             $('#' + this.id + ' .input-feedrate').change(this.generateGcode.bind(this));
+            $('#' + this.id + ' .input-motordistance').change(this.generateGcode.bind(this));
+            $('#' + this.id + ' .input-startpositionx').change(this.generateGcode.bind(this));
+            $('#' + this.id + ' .input-startpositiony').change(this.generateGcode.bind(this));
             // $('#' + this.id + ' .input-inflate').change(this.onInflateChange.bind(this));
             
             // assign button events
@@ -515,20 +518,23 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
         getSettings: function() {
             // get text
             this.options["svg"] = $('#' + this.id + ' .input-svg').val();
-            this.options["pointsperpath"] = parseInt($('#' + this.id + ' .input-pointsperpath').val());
+            // this.options["pointsperpath"] = parseInt($('#' + this.id + ' .input-pointsperpath').val());
             
-            this.options["holes"] = $('#' + this.id + ' .input-holes').is(":checked");
-            this.options["cut"] = $('#' + this.id + ' input[name=com-chilipeppr-widget-svg2gcode-cut]:checked').val();
-            this.options["dashPercent"] = $('#' + this.id + ' .input-dashPercent').val();
-            this.options["mode"] = $('#' + this.id + ' input[name=com-chilipeppr-widget-svg2gcode-mode]:checked').val();
-            this.options["laseron"] = $('#' + this.id + ' input[name=com-chilipeppr-widget-svg2gcode-laseron]:checked').val();
-            this.options["lasersvalue"] = $('#' + this.id + ' .input-svalue').val();
-            this.options["millclearanceheight"] = parseFloat($('#' + this.id + ' .input-clearance').val());
-            this.options["milldepthcut"] = parseFloat($('#' + this.id + ' .input-depthcut').val());
-            this.options["millfeedrateplunge"] = $('#' + this.id + ' .input-feedrateplunge').val();
-            this.options["inflate"] = parseFloat($('#' + this.id + ' .input-inflate').val());
+            // this.options["holes"] = $('#' + this.id + ' .input-holes').is(":checked");
+            // this.options["cut"] = $('#' + this.id + ' input[name=com-chilipeppr-widget-svg2gcode-cut]:checked').val();
+            // this.options["dashPercent"] = $('#' + this.id + ' .input-dashPercent').val();
+            // this.options["mode"] = $('#' + this.id + ' input[name=com-chilipeppr-widget-svg2gcode-mode]:checked').val();
+            // this.options["laseron"] = $('#' + this.id + ' input[name=com-chilipeppr-widget-svg2gcode-laseron]:checked').val();
+            // this.options["lasersvalue"] = $('#' + this.id + ' .input-svalue').val();
+            // this.options["millclearanceheight"] = parseFloat($('#' + this.id + ' .input-clearance').val());
+            // this.options["milldepthcut"] = parseFloat($('#' + this.id + ' .input-depthcut').val());
+            // this.options["millfeedrateplunge"] = $('#' + this.id + ' .input-feedrateplunge').val();
+            // this.options["inflate"] = parseFloat($('#' + this.id + ' .input-inflate').val());
             this.options["feedrate"] = $('#' + this.id + ' .input-feedrate').val();
-            //console.log("settings:", this.options);    
+            this.options["motordistance"] = $('#' + this.id + ' .input-motordistance').val();
+            this.options["startx"] = $('#' + this.id + ' .input-startpositionx').val();
+            this.options["starty"] = $('#' + this.id + ' .input-startpositiony').val();
+            //console.log("settings:", this.options);
 
             this.saveOptionsLocalStorage();
         },
@@ -873,16 +879,17 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             var txtGrp = this.svgGroup;
 
             var that = this;
-            var isLaserOn = false;
-            var isAtClearanceHeight = false;
+            // var isAtClearanceHeight = false;
             var isFeedrateSpecifiedAlready = false;
 
             // container for coordination
             var pts = [];
 
 /************loop for extracting coordination from svg to pts (world) coordination  ******/
-            var offsetX = 0;
-            var offsetY = 80;
+            //loading start position of the graphic
+            var offsetX = parseInt(this.options.startx, 10);
+            var offsetY = parseInt(this.options.starty, 10);
+
             txtGrp.traverse( function(child) {
                 if (child.type == "Line") {
 
@@ -897,7 +904,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                             // move to start point)
                             g += "G0 X" + worldPt.x.toFixed(3) + 
                                 " Y" + worldPt.y.toFixed(3) + "\n";
-                            var pt0 = { x: (worldPt.x + offsetX).toFixed(3) , y: (worldPt.y + offsetY).toFixed(3) , write: false };
+                            var pt0 = { x: (worldPt.x + offsetX) , y: (worldPt.y + offsetY), write: false };
                             pts.push(pt0);
                         }
                         else {
@@ -913,7 +920,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                                 " X" + (worldPt.x + offsetX).toFixed(3) + 
                                 " Y" + (worldPt.y + offsetY).toFixed(3) + "\n";
 
-                            var pt = { x: (worldPt.x + offsetX).toFixed(3), y: (worldPt.y + offsetY).toFixed(3), write: true };
+                            var pt = { x: (worldPt.x + offsetX), y: (worldPt.y + offsetY), write: true };
                             pts.push(pt);
                         }
                     }
@@ -926,7 +933,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
 
             gcode = this.getGcode(pts);
             g = gcode;
-            console.log("gcode for pendeograph: ", gcode);
+            // console.log("gcode for pendeograph: ", gcode);
 
             $('#' + this.id + " .gcode").val(g).prop('disabled', false);
             $('#' + this.id + " .btn-sendgcodetows").prop('disabled', false);
@@ -938,7 +945,6 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
 
         },
 
-        width: 80,
         state: { x: 0, y: 0, write: false },
         // these settings are temporary! must be taken from input field
         servoDown: 30,
@@ -947,7 +953,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
         getGcode: function(pts){
             // init machine coordination status
             this.state.x = 0;
-            this.state.y = this.width;
+            this.state.y = 0;
             this.state.write = false;
 
             var code = "";
@@ -980,31 +986,32 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
         },
 
         getNextMove: function(pt){
-            // do normal feedrate move
-            var feedrate;
-            feedrate = this.options.feedrate;
 
-            var writingSpeed = feedrate / 2;
+            var move = { m1: 0, m2: 0, feedrate: 0, write: pt.write };
+            var motDistance = parseInt(this.options.motordistance, 10);
 
-            var move = { m1: 0, m2: 0, feedrate: 0, write: false };
-            var spd = feedrate;
-            if (pt.write) {
-                spd = writingSpeed;
-                move.write = true;
+            // speed setting, moving condition is only temporal!
+            var spd = parseInt(this.options.feedrate, 10);
+            if (!pt.write) {
+                spd *= 2;
             }
 
-            // get delta for each motors
-            move.m1 = this.getDelta(this.state.x, this.state.y, pt.x, pt.y);
-            move.m2 = this.getDelta(this.state.x - this.width, this.state.y, pt.x - this.width, pt.y);
+            // get movement value for each motors: differential version (delta)
+            // move.m1 = this.getDelta(this.state.x, this.state.y, pt.x, pt.y);
+            // move.m2 = this.getDelta(this.state.x - this.width, this.state.y, pt.x - this.width, pt.y);
+
+            // get movement value for each motors: absolute length version
+            move.m1 = this.getLength(pt.x, pt.y);
+            move.m2 = this.getLength(pt.x - motDistance, pt.y);
           
             var ptDist = this.getLength(this.state.x - pt.x, this.state.y - pt.y);
-            console.log("ptDist: ", ptDist);
-            console.log("m1: ", move.m1);
-            console.log("m2: ", move.m2);
-            console.log("ptX: ", pt.x);
-            console.log("ptY: ", pt.y);
-            console.log("stateX: ", this.state.x);
-            console.log("stateY: ", this.state.y);
+            // console.log("ptDist: ", ptDist);
+            // console.log("m1: ", move.m1);
+            // console.log("m2: ", move.m2);
+            // console.log("ptX: ", pt.x);
+            // console.log("ptY: ", pt.y);
+            // console.log("stateX: ", this.state.x);
+            // console.log("stateY: ", this.state.y);
 
             var movingTime = ptDist / spd;
             // imaginal moving distance on control plane to get motor speed for GRBL
@@ -2338,7 +2345,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
     
             var serializer = new XMLSerializer();
             var svgString = serializer.serializeToString(xmlDoc);
-            console.log("svg 2 text: ", svgString);
+            // console.log("svg 2 text: ", svgString);
             $("#path").val(svgString);    
         },
         /**
@@ -2410,24 +2417,24 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
         <div class="panel-body">
 
             <!-- Nav tabs -->
-            <!-- <ul class="nav nav-tabs" role="tablist">
-                <li class="active"><a href="#com-zipwhip-widget-svg2gcode-yg-tab1" role="tab" data-toggle="tab">Render</a>
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="active"><a href="#com-zipwhip-widget-svg2gcode-yg-tab1" role="tab" data-toggle="tab">Motor</a>
                 </li>
-                <li class="xactive"><a href="#com-zipwhip-widget-svg2gcode-yg-tab2" role="tab" data-toggle="tab">Gcode</a></li> -->
-                <!--<li><a href="#com-zipwhip-widget-svg2gcode-yg-tab3" role="tab" data-toggle="tab">Dispenser</a></li>-->
-                <!--<li><a href="#com-zipwhip-widget-svg2gcode-yg-tab4" role="tab" data-toggle="tab">Laser</a></li>-->
-            <!-- </ul> -->
+                <li class="xactive"><a href="#com-zipwhip-widget-svg2gcode-yg-tab2" role="tab" data-toggle="tab">Pen</a></li>
+                <!-- <li><a href="#com-zipwhip-widget-svg2gcode-yg-tab3" role="tab" data-toggle="tab">Dispenser</a></li>
+                <li><a href="#com-zipwhip-widget-svg2gcode-yg-tab4" role="tab" data-toggle="tab">Laser</a></li> -->
+            </ul>
 
             <!-- Tab panes -->
-            <!-- <div class="tab-content"> -->
+            <div class="tab-content">
 
                 <!-- Tab 1 -->
-                <!-- <div class="tab-pane active" id="com-zipwhip-widget-svg2gcode-yg-tab1"> -->
+                <div class="tab-pane active" id="com-zipwhip-widget-svg2gcode-yg-tab1">
                     <p style="margin-top:0px;margin-bottom:0;padding-bottom:0;">Load your SVG file from here or paste/drag on beneath</p>
                     <input id="myFile" name="myFile" type="file" accept=".svg" class="btn btn-default">
                     <!-- <button style="margin-bottom:4px;" type="button" class="btn btn-default btn-loadgcode">Load File</button> -->
                     <a href="javascript:" class="load-logo" style="font-size:11px;margin-top:0;padding-top:0;">Load Example ChiliPeppr Logo</a>
-                    <textarea id="path" class="form-control input-svg" rows="10" spellcheck="false">
+                    <textarea id="path" class="form-control input-svg" rows="5" spellcheck="false">
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
@@ -2613,10 +2620,27 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                         </div> -->
                     <!-- </div> -->
                     <div class="form-group" xstyle="padding-left:18px;">
-                        <span xstyle="font-size:11px;">Feedrate During Drawing</span>
+                        <p style="margin-top:3px;margin-bottom:0;font-size:11px;">Pen Speed While Drawing</p>                        
                         <div class="input-group">
                             <input type="number" min="0" max="5000" step="10" class="form-control input-feedrate" value="200" placeholder="Enter feedrate">
                             <div class="input-group-addon">mm/min</div>
+                        </div>
+                    </div>
+                    <div class="form-group" xstyle="padding-left:18px;">
+                        <p style="margin-top:3px;margin-bottom:0;font-size:11px;">Motor Distance</p>
+                        <div class="input-group">
+                            <input type="number" min="100" max="5000" step="1" class="form-control input-motordistance" value="300" placeholder="Enter distance between motors">
+                            <div class="input-group-addon">mm</div>
+                        </div>
+                    </div>
+                    <div class="form-group" xstyle="padding-left:18px;">
+                        <p style="margin-top:3px;margin-bottom:0;font-size:11px;">Start Position (lower left corner)</p>
+                        <div class="input-group">
+                            <input type="number" min="100" max="5000" step="1" class="form-control input-startpositionx" value="150" placeholder="start x position">
+                            <div class="input-group-addon">mm</div>
+                            <input type="number" min="100" max="5000" step="1" class="form-control input-startpositiony" value="150" placeholder="start Y position">
+                            <div class="input-group-addon">mm</div>
+
                         </div>
                     </div>
                     
@@ -2624,38 +2648,28 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                     <span class="gcode-size-span hidden"><span class="gcode-size" style="font-size:11px;color:blue;">88Kb</span></span></p>
                     <button style="margin-bottom:4px;" type1="button" class="btn btn-default btn-updategcode">Update Gcode</button>
                     <button style="margin-bottom:4px;" type1="button" class="btn btn-default btn-sendgcodetows">Send Gcode to Workspace</button>
-                    <textarea class="form-control gcode" rows="10" spellcheck="false"></textarea>
-                <!-- </div> -->
+                    <textarea class="form-control gcode" rows="5" spellcheck="false"></textarea>
+                </div>
 
                 <!-- Tab 2 -->
-                <!-- <div class="tab-pane xactive" id="com-zipwhip-widget-svg2gcode-yg-tab2">
+                <div class="tab-pane xactive" id="com-zipwhip-widget-svg2gcode-yg-tab2">
 
                     <div class="form-group">
-                        <p style="margin-bottom:0">Mode</p>
-                        <div>
-                            <label class="radio-inline">
-                                <input class="svg2gcode-modetype" type="radio" name="com-chilipeppr-widget-svg2gcode-mode" value="laser" checked> Laser
-                            </label>
-                            <div class="form-group mode-laser" style="padding-left:20px;margin-bottom:0">
-                                <p style="margin-bottom:0;font-size:11px;">Turn Laser On With</p>
-                                <label class="radio-inline">
-                                    <input class="svg2gcode-modetype" type="radio" name="com-chilipeppr-widget-svg2gcode-laseron" value="M3" checked> M3 (Spindle)
-                                </label>
-                                <label class="radio-inline">
-                                    <input class="svg2gcode-modetype" type="radio" name="com-chilipeppr-widget-svg2gcode-laseron" value="M7"> M7 (Coolant)
-                                </label>
-                                <p style="margin-top:3px;margin-bottom:0;font-size:11px;">S Value (M3 PWM Spindle Speed)</p>
-                                <div class="input-group">
-                                    <input type="number" min="0" step="1" class="form-control input-svalue" value="1" placeholder="Enter S value">
-                                    <div class="input-group-addon">mm</div>
-                                </div>
-                                <p style="margin-top:3px;margin-bottom:0;font-size:11px;">
-                                    On TinyG enter $p1 to see PWM settings. Set $p1cpl=0, $p1cph=1, $p1csl=0, 
-                                    $p1csh=1, $p1pof=0 then use 
-                                    1 in the box above for 100% power, 0.1 for 10% power, etc.
-                                </p>
+                        <p style="margin-bottom:0">Servo Control</p>
+                        <div class="form-group mode-laser" style="padding-left:20px;margin-bottom:0">
+                            <p style="margin-top:3px;margin-bottom:0;font-size:11px;">Servo Up (While Moving)</p>
+                            <div class="input-group">
+                                <input type="number" min="0" max="0" step="1" class="form-control input-svalue" value="30" placeholder="Servo position">
+                                <div class="input-group-addon">mm</div>
                             </div>
-                        </div> -->
+                            <p style="margin-top:3px;margin-bottom:0;font-size:11px;">Servo Down (While Writing)</p>
+                            <div class="input-group">
+                                <input type="number" min="0" max="180" step="1" class="form-control input-svalue" value="70" placeholder="Servo position">
+                                <div class="input-group-addon">mm</div>
+                            </div>
+
+                        </div>
+
                         <!-- <label class="radio-inline">
                             <input class="svg2gcode-modetype" type="radio" name="com-chilipeppr-widget-svg2gcode-mode" value="mill"> Mill
                         </label>
@@ -2676,7 +2690,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                                 <div class="input-group-addon">mm/min</div>
                             </div>
                         </div> -->
-                    <!-- </div> -->
+                    </div>
 
                     <!-- <div class="form-group" xstyle="padding-left:18px;">
                         <span xstyle="font-size:11px;">Feedrate During Drawing</span>
@@ -2691,9 +2705,9 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                     <button style="margin-bottom:4px;" type="button" class="btn btn-default btn-sendgcodetows">Send Gcode to Workspace</button>
                     <textarea class="form-control gcode" rows="3" spellcheck="false"></textarea> -->
 
-                <!-- </div> -->
+                </div>
                 <!-- End Tab 2 -->
-            <!-- </div> -->
+            </div>
         </div>
         
     </div>
