@@ -73,9 +73,9 @@
                 <!-- Tab 1 -->
                 <!-- <div class="tab-pane active" id="com-zipwhip-widget-svg2gcode-yg-tab1"> -->
                     <p style="margin-top:0px;margin-bottom:0;padding-bottom:0;">Load your SVG file from here or paste/drag on beneath</p>
-                    <input id="myFile" name="myFile" type="file" accept=".svg">
-                    <button style="margin-bottom:4px;" type="button" class="btn btn-default btn-loadgcode">Load File</button>
-                    <a href="javascript:" class="load-logo" style="font-size:11px;margin-top:0;padding-top:0;">Load Example ChiliPeppr Logo</a>                    
+                    <input id="myFile" name="myFile" type="file" accept=".svg" class="btn btn-default">
+                    <!-- <button style="margin-bottom:4px;" type="button" class="btn btn-default btn-loadgcode">Load File</button> -->
+                    <a href="javascript:" class="load-logo" style="font-size:11px;margin-top:0;padding-top:0;">Load Example ChiliPeppr Logo</a>
                     <textarea id="path" class="form-control input-svg" rows="10" spellcheck="false">
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
@@ -271,7 +271,8 @@
                     
                     <p style="margin-top:10px;margin-bottom:2px;">Gcode <span class="regenerate" style="font-size:11px;color:red;">Needs re-generated</span>
                     <span class="gcode-size-span hidden"><span class="gcode-size" style="font-size:11px;color:blue;">88Kb</span></span></p>
-                    <button style="margin-bottom:4px;" type="button" class="btn btn-default btn-sendgcodetows">Send Gcode to Workspace</button>
+                    <button style="margin-bottom:4px;" type1="button" class="btn btn-default btn-updategcode">Update Gcode</button>
+                    <button style="margin-bottom:4px;" type1="button" class="btn btn-default btn-sendgcodetows">Send Gcode to Workspace</button>
                     <textarea class="form-control gcode" rows="10" spellcheck="false"></textarea>
                 <!-- </div> -->
 

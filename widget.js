@@ -354,8 +354,13 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             // $('#' + this.id + ' .input-inflate').change(this.onInflateChange.bind(this));
             
             // assign button events
-            $('#' + this.id + ' .btn-loadgcode').click(this.loadGcodeToField.bind(this));
+            // $('#' + this.id + ' .btn-loadgcode').click(this.loadGcodeToField.bind(this));
             $('#' + this.id + ' .btn-sendgcodetows').click(this.sendGcodeToWorkspace.bind(this));
+            $('#' + this.id + ' .btn-updategcode').click(this.onChange.bind(this));
+
+            //trigger load event when svg file is selected, so no need to trigger it from button...
+            $('#myFile').change(this.loadGcodeToField.bind(this));
+
 
             // debug arrow
             $('#' + this.id + ' .btn-arrow').click(this.drawDebugArrowHelperFor3DToScreenPosition.bind(this));
@@ -754,7 +759,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
          * allows this to be called a bunch of times and it will always wait
          * to do the generate about 1 second later and de-dupe the multiple calls.
          */
-         generateGcode: function() {
+        generateGcode: function() {
             // this may be an odd place to trigger gcode change, but this method
             // is called on all scaling changes, so do it here for now
             if (this.generateGcodeTimeoutPtr) {
@@ -799,8 +804,16 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             var isLaserOn = false;
             var isAtClearanceHeight = false;
             var isFeedrateSpecifiedAlready = false;
+
+            // container for coordination
+            var pts = [];
+
+/************loop for extracting coordination from svg to pts (world) coordination  ******/
+            var offsetX = 0;
+            var offsetY = 80;
             txtGrp.traverse( function(child) {
                 if (child.type == "Line") {
+
                     // let's create gcode for all points in line
                     for (i = 0; i < child.geometry.vertices.length; i++) {
                         var localPt = child.geometry.vertices[i];
@@ -808,56 +821,14 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                         // console.log("localPt: ", localPt)
                         // console.log("worldPt: ", worldPt)
                         
-                        if (i == 0) {
-                            // first point in line where we start lasering/milling
-                            // move to point
-                            
-                            // if milling, we need to move to clearance height
-                            // if (that.options.mode == "mill") {
-                            //     if (!isAtClearanceHeight) {
-                            //         g += "G0 Z" + that.options.millclearanceheight + "\n";
-                            //     }
-                            // }
-                            
-                            // move to start point
+                        if (i == 0) {                            
+                            // move to start point)
                             g += "G0 X" + worldPt.x.toFixed(3) + 
                                 " Y" + worldPt.y.toFixed(3) + "\n";
-                            
-                            // if milling move back to depth cut
-                            // if (that.options.mode == "mill") {
-                            //     var halfDistance = (that.options.millclearanceheight - that.options.milldepthcut) / 2;
-                            //     g += "G0 Z" + (that.options.millclearanceheight - halfDistance).toFixed(3)
-                            //         + "\n";
-                            //     g += "G1 F" + that.options.millfeedrateplunge + 
-                            //         " Z" + that.options.milldepthcut + "\n";
-                            //     isAtClearanceHeight = false;
-                            // }
-                            
+                            var pt0 = { x: (worldPt.x + offsetX).toFixed(3) , y: (worldPt.y + offsetY).toFixed(3) , write: false };
+                            pts.push(pt0);
                         }
                         else {
-                            
-                            // we are in a non-first line so this is normal moving
-                            
-                            // see if laser or milling
-                            // if (that.options.mode == "laser") {
-                                
-                            //     // if the laser is not on, we need to turn it on
-                            //     if (!isLaserOn) {
-                            //         if (that.options.laseron == "M3") {
-                            //             g += "M3 S" + that.options.lasersvalue;
-                            //         } else {
-                            //             g += that.options.laseron;
-                            //         }
-                            //         g += " (laser on)\n";
-                            //         isLaserOn = true;
-                            //     }
-                            // } else {
-                            //     // this is milling. if we are not at depth cut
-                            //     // we need to get there
-                                
-                                
-                            // }
-                            
                             // do normal feedrate move
                             var feedrate;
                             if (isFeedrateSpecifiedAlready) {
@@ -867,33 +838,24 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                                 isFeedrateSpecifiedAlready = true;
                             }
                             g += "G1" + feedrate + 
-                                " X" + worldPt.x.toFixed(3) + 
-                                " Y" + worldPt.y.toFixed(3) + "\n";
+                                " X" + (worldPt.x + offsetX).toFixed(3) + 
+                                " Y" + (worldPt.y + offsetY).toFixed(3) + "\n";
+
+                            var pt = { x: (worldPt.x + offsetX).toFixed(3), y: (worldPt.y + offsetY).toFixed(3), write: true };
+                            pts.push(pt);
                         }
                     }
                     
-                    // make feedrate have to get specified again on next line
-                    // if there is one
-                    // isFeedrateSpecifiedAlready = false;
-                    
-                    // see if laser or milling
-                    // if (that.options.mode == "laser") {
-                    //     // turn off laser at end of line
-                    //     isLaserOn = false;
-                    //     if (that.options.laseron == "M3")
-                    //         g += "M5 (laser off)\n";
-                    //     else
-                    //         g += "M9 (laser off)\n";
-                    // } else {
-                    //     // milling. move back to clearance height
-                    //     g += "G0 Z" + that.options.millclearanceheight + "\n";
-                    //     isAtClearanceHeight = true;
-                    // }
                 }
             });
             
             console.log("generated gcode. length:", g.length);
-            //console.log("gcode:", g);
+            console.log("points: ", pts);
+
+            gcode = this.getGcode(pts);
+            g = gcode;
+            console.log("gcode for pendeograph: ", gcode);
+
             $('#' + this.id + " .gcode").val(g).prop('disabled', false);
             $('#' + this.id + " .btn-sendgcodetows").prop('disabled', false);
             $('#' + this.id + " .regenerate").addClass('hidden');
@@ -903,6 +865,103 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             this.isGcodeInRegeneratingState = false;
 
         },
+
+        width: 80,
+        state: { x: 0, y: 0, write: false },
+        // these settings are temporary! must be taken from input field
+        servoDown: 30,
+        servoUp: 75,
+
+        getGcode: function(pts){
+            // init machine coordination status
+            this.state.x = 0;
+            this.state.y = 0;
+            this.state.write = false;
+
+            var code = "";
+            for (var i in pts) {
+                //convert coordination to motor movement
+                var param = this.getNextMove(pts[i]);
+                // console.log(param);
+                // down the pen if the pen is currently up
+                if (param.write & !this.state.write) {
+                    // Pen down
+                    code += "M3 S" + this.servoDown + "\n";
+                    // set machine status to write mode
+                    this.state.write = true;
+                }
+                else if (!param.write & this.state.write) {
+                    // Pen up
+                    code += "M3 S" + this.servoUp + "\n";
+                    // release write mode
+                    this.state.write = false;
+                }
+                code += "G1 X";
+                code += param.m1.toFixed(3);
+                code += " Y";
+                code += param.m2.toFixed(3);
+                code += " F";
+                code += param.feedrate.toFixed(3);
+                code += "\n";
+            }
+            return code;
+        },
+
+        getNextMove: function(pt){
+            // do normal feedrate move
+            var feedrate;
+            feedrate = this.options.feedrate;
+
+            var writingSpeed = feedrate / 2;
+
+            var move = { m1: 0, m2: 0, feedrate: 0, write: false };
+            var spd = feedrate;
+            if (pt.write) {
+                spd = writingSpeed;
+                move.write = true;
+            }
+
+            // get delta for each motors
+            move.m1 = this.getDelta(this.state.x, this.state.y, pt.x, pt.y);
+            move.m2 = this.getDelta(this.state.x - this.width, this.state.y, pt.x - this.width, pt.y);
+          
+            var ptDist = this.getLength(this.state.x - pt.x, this.state.y - pt.y);
+            console.log("ptDist: ", ptDist);
+            console.log("m1: ", move.m1);
+            console.log("m2: ", move.m2);
+            console.log("ptX: ", pt.x);
+            console.log("ptY: ", pt.y);
+            console.log("stateX: ", this.state.x);
+            console.log("stateY: ", this.state.y);
+
+            var movingTime = ptDist / spd;
+            // imaginal moving distance on control plane to get motor speed for GRBL
+            var motorDist12 = this.getLength(move.m1, move.m2);
+            if (movingTime == 0) {
+                // Exception handling divsion by zero
+                move.feedrate = 0;
+            }
+            else {
+                move.feedrate = motorDist12 / movingTime;
+            }
+
+            // update status
+            this.state.x = pt.x;
+            this.state.y = pt.y;
+          
+            return move;
+        },
+        getLength: function(locX, locY){
+            var length = Math.sqrt(locX * locX + locY * locY);
+            return length;
+        },
+        getDelta: function(nowX, nowY, nextX, nextY) {
+            var nowL = this.getLength(nowX, nowY);
+            var nextL = this.getLength(nextX, nextY);
+
+            return nextL - nowL;
+        },
+
         /**
          * Contains the SVG rendered Three.js group with everything in it including
          * the textbox handles and the marquee. So this is not the Three.js object
@@ -2170,7 +2229,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
         },
         /**
          * Hide the body of the panel.
-         * @param {jquery_event} evt - If you pass the event parameter in, we 
+         * @param {jquery_event} evt f- If you pass the event parameter in, we 
          * know it was clicked by the user and thus we store it for the next 
          * load so we can reset the user's preference. If you don't pass this 
          * value in we don't store the preference because it was likely code 
@@ -2187,9 +2246,15 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             }
             $(window).trigger("resize");
         },
+        // the action when load button was pushed, ideally this function will be called when a file is selected
         loadGcodeToField: function(){
-            console.log("load button pushed");
-            var input = document.getElementById('myFile');
+            console.log("loading svg code to the field...");
+
+            var input = $('#myFile')[0];
+            // var input = document.getElementById('myFile')
+            // console.log("load myFile using getElementById");
+            // console.log(input);
+
             if (input.files.length !=0){
                 var inputFile = input.files[0];
                 inputURL = window.URL.createObjectURL(inputFile);
@@ -2198,33 +2263,11 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             }
         },
         injectSvg: function(xmlDoc) {
-            // updateValues();
     
-            // var svg = $(xmlDoc).find("svg");
-            // console.log(svg);
             var serializer = new XMLSerializer();
             var svgString = serializer.serializeToString(xmlDoc);
-            console.log("svg 2 text", svgString);
-            // $('#' + this.id + " .input-svg").val(svgString).prop('disabled', false);
-            $("#path").val(svgString);
-    
-            // auto-update drawing area from canvas size
-            // var style = $("svg").attr("style");
-            // canvasSize = getCanvasSize(style);
-            // canvasWidth = canvasSize.x / scale;
-            // $("#width").val(canvasWidth);
-            // canvasHeight = canvasSize.y / scale;;
-            // $("#height").val(canvasHeight);
-    
-            // update layer name
-            // console.log($("svg").attr("id"));
-            // svgId = $("svg").attr("id");
-            // $("#layer").text(svgId);
-    
-            // update path name
-            // console.log($("path").attr("id"));
-            // var pathId = $("path").attr("id");
-            // $("#pathname").val(pathId);
+            console.log("svg 2 text: ", svgString);
+            $("#path").val(svgString);    
         },
         /**
          * This method loads the pubsubviewer widget which attaches to our 

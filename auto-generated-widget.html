@@ -426,8 +426,13 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             // $('#' + this.id + ' .input-inflate').change(this.onInflateChange.bind(this));
             
             // assign button events
-            $('#' + this.id + ' .btn-loadgcode').click(this.loadGcodeToField.bind(this));
+            // $('#' + this.id + ' .btn-loadgcode').click(this.loadGcodeToField.bind(this));
             $('#' + this.id + ' .btn-sendgcodetows').click(this.sendGcodeToWorkspace.bind(this));
+            $('#' + this.id + ' .btn-updategcode').click(this.onChange.bind(this));
+
+            //trigger load event when svg file is selected, so no need to trigger it from button...
+            $('#myFile').change(this.loadGcodeToField.bind(this));
+
 
             // debug arrow
             $('#' + this.id + ' .btn-arrow').click(this.drawDebugArrowHelperFor3DToScreenPosition.bind(this));
@@ -826,7 +831,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
          * allows this to be called a bunch of times and it will always wait
          * to do the generate about 1 second later and de-dupe the multiple calls.
          */
-         generateGcode: function() {
+        generateGcode: function() {
             // this may be an odd place to trigger gcode change, but this method
             // is called on all scaling changes, so do it here for now
             if (this.generateGcodeTimeoutPtr) {
@@ -871,6 +876,10 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             var isLaserOn = false;
             var isAtClearanceHeight = false;
             var isFeedrateSpecifiedAlready = false;
+
+            // container for coordination
+            var pts = [];
+
             txtGrp.traverse( function(child) {
                 if (child.type == "Line") {
                     // let's create gcode for all points in line
@@ -894,6 +903,8 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                             // move to start point
                             g += "G0 X" + worldPt.x.toFixed(3) + 
                                 " Y" + worldPt.y.toFixed(3) + "\n";
+                            var pt0 = { x: worldPt.x , y: worldPt.y , write: false };
+                            pts.push(pt0);
                             
                             // if milling move back to depth cut
                             // if (that.options.mode == "mill") {
@@ -941,6 +952,9 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                             g += "G1" + feedrate + 
                                 " X" + worldPt.x.toFixed(3) + 
                                 " Y" + worldPt.y.toFixed(3) + "\n";
+
+                            var pt = { x: worldPt.x, y: worldPt.y, write: true };
+                            pts.push(pt);
                         }
                     }
                     
@@ -965,7 +979,12 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             });
             
             console.log("generated gcode. length:", g.length);
-            //console.log("gcode:", g);
+            console.log("points: ", pts);
+
+            gcode = this.getGcode(pts);
+            g = gcode;
+            console.log("gcode for pendeograph: ", gcode);
+
             $('#' + this.id + " .gcode").val(g).prop('disabled', false);
             $('#' + this.id + " .btn-sendgcodetows").prop('disabled', false);
             $('#' + this.id + " .regenerate").addClass('hidden');
@@ -975,6 +994,96 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             this.isGcodeInRegeneratingState = false;
 
         },
+        state: { x: 0, y: 0, write: false },
+        // these settings are temporary! must be take from input field
+        servoDown: 30,
+        servoUp: 75,
+        getGcode: function(pts){
+            var code = "";
+            for (var i in pts) {
+                //convert coordination to motor movement
+                // var param = getNextMove(pts[i]);
+                var param = this.getNextMove(pts[i]);
+                console.log(param);
+                // drop the pen if the pen is not down and it's now writing mode
+                if (param.write & !this.state.write) {
+                    // Pen down
+                    code += "M3 S" + this.servoDown + "\n";
+                    // set machine status to write mode
+                    this.state.write = true;
+                }
+                else if (!param.write & this.state.write) {
+                    // Pen up
+                    code += "M3 S" + this.servoUp + "\n";
+                    // release write mode
+                    this.state.write = false;
+                }
+                code += "G1 X";
+                code += param.m1.toFixed(3);
+                code += " Y";
+                code += param.m2.toFixed(3);
+                code += " F";
+                code += param.feedrate.toFixed(3);
+                code += "\n";
+            }
+            return code;
+        },
+        width: 1000,
+        getNextMove: function(pt){
+            // do normal feedrate move
+            var feedrate;
+            feedrate = this.options.feedrate;
+
+            var writingSpeed = 1000;
+
+            // var move = new Movement();
+            var move = { m1: 0, m2: 0, feedrate: 0, write: false };
+            var spd = feedrate;
+            // var spd = pt.getF();
+            if (pt.write) {
+                spd = writingSpeed;
+                move.write = true;
+            }
+
+            // get delta for each motors
+            move.m1 = this.getDelta(this.state.x, this.state.y, pt.x, pt.y);
+            // move.m1 = getDelta(location.getX(), location.getY(), pt.getX(), pt.y);
+            move.m2 = this.getDelta(this.state.x - this.width, this.state.y, pt.x - this.width, pt.y);
+            // move.m2 = getDelta(location.getX() - width, location.getY(), pt.x - width, pt.getY());
+
+            var ptDist = this.getLength(this.state.x - pt.x, this.state.y - pt.y);
+            // var ptDist = getLength(location.getX() - pt.getX(), location.getY() - pt.getY());
+            var movingTime = ptDist / spd;
+            // imaginal moving distance on control plane to get motor speed for GRBL
+            // var motorDist12 = getLength(move.getM1(), move.getM2());
+            var motorDist12 = this.getLength(move.m1, move.m2);
+            if (movingTime == 0) {
+                // Exception handling divsion by zero
+                move.feedrate = 0;
+            }
+            else {
+                move.feedrate = motorDist12 / movingTime;
+            }
+
+            // update status
+            this.state.y = pt.y;
+            this.state.x = pt.x;
+            // location.x = pt.getX();
+            // location.y = pt.getY();
+
+            return move;
+        },
+        getLength: function(locX, locY){
+            var length = Math.sqrt(locX * locX + locY * locY);
+            return length;
+        },
+        getDelta: function(nowX, nowY, nextX, nextY) {
+            var nowL = this.getLength(nowX, nowY);
+            var nextL = this.getLength(nextX, nextY);
+
+            return nextL - nowL;
+        },
+
         /**
          * Contains the SVG rendered Three.js group with everything in it including
          * the textbox handles and the marquee. So this is not the Three.js object
@@ -2242,7 +2351,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
         },
         /**
          * Hide the body of the panel.
-         * @param {jquery_event} evt - If you pass the event parameter in, we 
+         * @param {jquery_event} evt f- If you pass the event parameter in, we 
          * know it was clicked by the user and thus we store it for the next 
          * load so we can reset the user's preference. If you don't pass this 
          * value in we don't store the preference because it was likely code 
@@ -2259,39 +2368,28 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             }
             $(window).trigger("resize");
         },
+        // the action when load button was pushed, ideally this function will be called when a file is selected
         loadGcodeToField: function(){
-            var input = document.getElementById('myFile');
+            console.log("loading svg code to the field...");
+
+            var input = $('#myFile')[0];
+            // var input = document.getElementById('myFile')
+            // console.log("load myFile using getElementById");
+            // console.log(input);
+
             if (input.files.length !=0){
                 var inputFile = input.files[0];
                 inputURL = window.URL.createObjectURL(inputFile);
                 $.get(inputURL)
-                .then(injectSvg);
+                .then(this.injectSvg);
             }
         },
         injectSvg: function(xmlDoc) {
-            // updateValues();
     
-            var svg = $(xmlDoc).find("svg");
-            console.log(svg);
-            // container.append(svg);
-    
-            // auto-update drawing area from canvas size
-            // var style = $("svg").attr("style");
-            // canvasSize = getCanvasSize(style);
-            // canvasWidth = canvasSize.x / scale;
-            // $("#width").val(canvasWidth);
-            // canvasHeight = canvasSize.y / scale;;
-            // $("#height").val(canvasHeight);
-    
-            // update layer name
-            // console.log($("svg").attr("id"));
-            // svgId = $("svg").attr("id");
-            // $("#layer").text(svgId);
-    
-            // update path name
-            // console.log($("path").attr("id"));
-            // var pathId = $("path").attr("id");
-            // $("#pathname").val(pathId);
+            var serializer = new XMLSerializer();
+            var svgString = serializer.serializeToString(xmlDoc);
+            console.log("svg 2 text: ", svgString);
+            $("#path").val(svgString);    
         },
         /**
          * This method loads the pubsubviewer widget which attaches to our 
@@ -2375,11 +2473,11 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
 
                 <!-- Tab 1 -->
                 <!-- <div class="tab-pane active" id="com-zipwhip-widget-svg2gcode-yg-tab1"> -->
-                    <p style="margin-top:0px;margin-bottom:0;padding-bottom:0;">Load Your SVG File From Here Or Paste/Drag on beneath</p>
-                    <input id="myFile" name="myFile" type="file" accept=".svg">
-                    <button style="margin-bottom:4px;" type="button" class="btn btn-default btn-loadgcode">Load File</button>
-                    <a href="javascript:" class="load-logo" style="font-size:11px;margin-top:0;padding-top:0;">Load Example ChiliPeppr Logo</a>                    
-                    <textarea class="form-control input-svg" rows="10" spellcheck="false">
+                    <p style="margin-top:0px;margin-bottom:0;padding-bottom:0;">Load your SVG file from here or paste/drag on beneath</p>
+                    <input id="myFile" name="myFile" type="file" accept=".svg" class="btn btn-default">
+                    <!-- <button style="margin-bottom:4px;" type="button" class="btn btn-default btn-loadgcode">Load File</button> -->
+                    <a href="javascript:" class="load-logo" style="font-size:11px;margin-top:0;padding-top:0;">Load Example ChiliPeppr Logo</a>
+                    <textarea id="path" class="form-control input-svg" rows="10" spellcheck="false">
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
@@ -2574,7 +2672,8 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                     
                     <p style="margin-top:10px;margin-bottom:2px;">Gcode <span class="regenerate" style="font-size:11px;color:red;">Needs re-generated</span>
                     <span class="gcode-size-span hidden"><span class="gcode-size" style="font-size:11px;color:blue;">88Kb</span></span></p>
-                    <button style="margin-bottom:4px;" type="button" class="btn btn-default btn-sendgcodetows">Send Gcode to Workspace</button>
+                    <button style="margin-bottom:4px;" type1="button" class="btn btn-default btn-updategcode">Update Gcode</button>
+                    <button style="margin-bottom:4px;" type1="button" class="btn btn-default btn-sendgcodetows">Send Gcode to Workspace</button>
                     <textarea class="form-control gcode" rows="10" spellcheck="false"></textarea>
                 <!-- </div> -->
 

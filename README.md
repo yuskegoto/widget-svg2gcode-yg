@@ -162,7 +162,7 @@ have delta = 3. You can also set delta to a negative number to deflate. Make
 sure the winding order is correct as well.</td></tr><tr valign="top"><td>generateGcodeTimeoutPtr</td><td>object</td><td></td></tr><tr valign="top"><td>isGcodeInRegeneratingState</td><td>boolean</td><td></td></tr><tr valign="top"><td>generateGcode</td><td>function</td><td>function() <br><br>This method will trigger a process to generateGcode however, it
 allows this to be called a bunch of times and it will always wait
 to do the generate about 1 second later and de-dupe the multiple calls.</td></tr><tr valign="top"><td>generateGcodeCallback</td><td>function</td><td>function() <br><br>Iterate over the text3d that was generated and create
-Gcode to mill/cut the three.js object.</td></tr><tr valign="top"><td>svgParentGroup</td><td>object</td><td>Contains the SVG rendered Three.js group with everything in it including
+Gcode to mill/cut the three.js object.</td></tr><tr valign="top"><td>state</td><td>object</td><td></td></tr><tr valign="top"><td>servoDown</td><td>number</td><td></td></tr><tr valign="top"><td>servoUp</td><td>number</td><td></td></tr><tr valign="top"><td>getGcode</td><td>function</td><td>function(pts)</td></tr><tr valign="top"><td>width</td><td>number</td><td></td></tr><tr valign="top"><td>getNextMove</td><td>function</td><td>function(pt)</td></tr><tr valign="top"><td>getLength</td><td>function</td><td>function(locX, locY)</td></tr><tr valign="top"><td>getDelta</td><td>function</td><td>function(nowX, nowY, nextX, nextY) </td></tr><tr valign="top"><td>svgParentGroup</td><td>object</td><td>Contains the SVG rendered Three.js group with everything in it including
 the textbox handles and the marquee. So this is not the Three.js object
 that only contains the SVG that was rendered. Use svgGroup for that which
 is a child.</td></tr><tr valign="top"><td>svgGroup</td><td>object</td><td>Contains the actual rendered SVG file. This is where the action is.</td></tr><tr valign="top"><td>svgPath</td><td>object</td><td>Contains the original path from SVG file. This is like layer 1 of the rendering.</td></tr><tr valign="top"><td>svgInflatePath</td><td>object</td><td>Contains the inflated/deflated path. This is like layer 2 of the rendering. If no
@@ -191,7 +191,7 @@ know it was clicked by the user and thus we store it for the next
 load so we can reset the user's preference. If you don't pass this 
 value in we don't store the preference because it was likely code 
 that sent in the param.</td></tr><tr valign="top"><td>hideBody</td><td>function</td><td>function(evt) <br><br>Hide the body of the panel.
-<br><br><b>evt</b> ({jquery_event})  - If you pass the event parameter in, we 
+<br><br><b>evt</b> ({jquery_event})  f- If you pass the event parameter in, we 
 know it was clicked by the user and thus we store it for the next 
 load so we can reset the user's preference. If you don't pass this 
 value in we don't store the preference because it was likely code 
