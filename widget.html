@@ -59,24 +59,24 @@
         <div class="panel-body">
 
             <!-- Nav tabs -->
-            <!-- <ul class="nav nav-tabs" role="tablist">
-                <li class="active"><a href="#com-zipwhip-widget-svg2gcode-yg-tab1" role="tab" data-toggle="tab">Render</a>
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="active"><a href="#com-zipwhip-widget-svg2gcode-yg-tab1" role="tab" data-toggle="tab">Motor</a>
                 </li>
-                <li class="xactive"><a href="#com-zipwhip-widget-svg2gcode-yg-tab2" role="tab" data-toggle="tab">Gcode</a></li> -->
-                <!--<li><a href="#com-zipwhip-widget-svg2gcode-yg-tab3" role="tab" data-toggle="tab">Dispenser</a></li>-->
-                <!--<li><a href="#com-zipwhip-widget-svg2gcode-yg-tab4" role="tab" data-toggle="tab">Laser</a></li>-->
-            <!-- </ul> -->
+                <li class="xactive"><a href="#com-zipwhip-widget-svg2gcode-yg-tab2" role="tab" data-toggle="tab">Pen</a></li>
+                <!-- <li><a href="#com-zipwhip-widget-svg2gcode-yg-tab3" role="tab" data-toggle="tab">Dispenser</a></li>
+                <li><a href="#com-zipwhip-widget-svg2gcode-yg-tab4" role="tab" data-toggle="tab">Laser</a></li> -->
+            </ul>
 
             <!-- Tab panes -->
-            <!-- <div class="tab-content"> -->
+            <div class="tab-content">
 
                 <!-- Tab 1 -->
-                <!-- <div class="tab-pane active" id="com-zipwhip-widget-svg2gcode-yg-tab1"> -->
+                <div class="tab-pane active" id="com-zipwhip-widget-svg2gcode-yg-tab1">
                     <p style="margin-top:0px;margin-bottom:0;padding-bottom:0;">Load your SVG file from here or paste/drag on beneath</p>
                     <input id="myFile" name="myFile" type="file" accept=".svg" class="btn btn-default">
                     <!-- <button style="margin-bottom:4px;" type="button" class="btn btn-default btn-loadgcode">Load File</button> -->
                     <a href="javascript:" class="load-logo" style="font-size:11px;margin-top:0;padding-top:0;">Load Example ChiliPeppr Logo</a>
-                    <textarea id="path" class="form-control input-svg" rows="10" spellcheck="false">
+                    <textarea id="path" class="form-control input-svg" rows="5" spellcheck="false">
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
@@ -262,10 +262,27 @@
                         </div> -->
                     <!-- </div> -->
                     <div class="form-group" xstyle="padding-left:18px;">
-                        <span xstyle="font-size:11px;">Feedrate During Drawing</span>
+                        <p style="margin-top:3px;margin-bottom:0;font-size:11px;">Pen Speed While Drawing</p>                        
                         <div class="input-group">
                             <input type="number" min="0" max="5000" step="10" class="form-control input-feedrate" value="200" placeholder="Enter feedrate">
                             <div class="input-group-addon">mm/min</div>
+                        </div>
+                    </div>
+                    <div class="form-group" xstyle="padding-left:18px;">
+                        <p style="margin-top:3px;margin-bottom:0;font-size:11px;">Motor Distance</p>
+                        <div class="input-group">
+                            <input type="number" min="100" max="5000" step="1" class="form-control input-motordistance" value="300" placeholder="Enter distance between motors">
+                            <div class="input-group-addon">mm</div>
+                        </div>
+                    </div>
+                    <div class="form-group" xstyle="padding-left:18px;">
+                        <p style="margin-top:3px;margin-bottom:0;font-size:11px;">Start Position (lower left corner)</p>
+                        <div class="input-group">
+                            <input type="number" min="100" max="5000" step="1" class="form-control input-startpositionx" value="150" placeholder="start x position">
+                            <div class="input-group-addon">mm</div>
+                            <input type="number" min="100" max="5000" step="1" class="form-control input-startpositiony" value="150" placeholder="start Y position">
+                            <div class="input-group-addon">mm</div>
+
                         </div>
                     </div>
                     
@@ -273,38 +290,28 @@
                     <span class="gcode-size-span hidden"><span class="gcode-size" style="font-size:11px;color:blue;">88Kb</span></span></p>
                     <button style="margin-bottom:4px;" type1="button" class="btn btn-default btn-updategcode">Update Gcode</button>
                     <button style="margin-bottom:4px;" type1="button" class="btn btn-default btn-sendgcodetows">Send Gcode to Workspace</button>
-                    <textarea class="form-control gcode" rows="10" spellcheck="false"></textarea>
-                <!-- </div> -->
+                    <textarea class="form-control gcode" rows="5" spellcheck="false"></textarea>
+                </div>
 
                 <!-- Tab 2 -->
-                <!-- <div class="tab-pane xactive" id="com-zipwhip-widget-svg2gcode-yg-tab2">
+                <div class="tab-pane xactive" id="com-zipwhip-widget-svg2gcode-yg-tab2">
 
                     <div class="form-group">
-                        <p style="margin-bottom:0">Mode</p>
-                        <div>
-                            <label class="radio-inline">
-                                <input class="svg2gcode-modetype" type="radio" name="com-chilipeppr-widget-svg2gcode-mode" value="laser" checked> Laser
-                            </label>
-                            <div class="form-group mode-laser" style="padding-left:20px;margin-bottom:0">
-                                <p style="margin-bottom:0;font-size:11px;">Turn Laser On With</p>
-                                <label class="radio-inline">
-                                    <input class="svg2gcode-modetype" type="radio" name="com-chilipeppr-widget-svg2gcode-laseron" value="M3" checked> M3 (Spindle)
-                                </label>
-                                <label class="radio-inline">
-                                    <input class="svg2gcode-modetype" type="radio" name="com-chilipeppr-widget-svg2gcode-laseron" value="M7"> M7 (Coolant)
-                                </label>
-                                <p style="margin-top:3px;margin-bottom:0;font-size:11px;">S Value (M3 PWM Spindle Speed)</p>
-                                <div class="input-group">
-                                    <input type="number" min="0" step="1" class="form-control input-svalue" value="1" placeholder="Enter S value">
-                                    <div class="input-group-addon">mm</div>
-                                </div>
-                                <p style="margin-top:3px;margin-bottom:0;font-size:11px;">
-                                    On TinyG enter $p1 to see PWM settings. Set $p1cpl=0, $p1cph=1, $p1csl=0, 
-                                    $p1csh=1, $p1pof=0 then use 
-                                    1 in the box above for 100% power, 0.1 for 10% power, etc.
-                                </p>
+                        <p style="margin-bottom:0">Servo Control</p>
+                        <div class="form-group mode-laser" style="padding-left:20px;margin-bottom:0">
+                            <p style="margin-top:3px;margin-bottom:0;font-size:11px;">Servo Up (While Moving)</p>
+                            <div class="input-group">
+                                <input type="number" min="0" max="0" step="1" class="form-control input-svalue" value="30" placeholder="Servo position">
+                                <div class="input-group-addon">mm</div>
                             </div>
-                        </div> -->
+                            <p style="margin-top:3px;margin-bottom:0;font-size:11px;">Servo Down (While Writing)</p>
+                            <div class="input-group">
+                                <input type="number" min="0" max="180" step="1" class="form-control input-svalue" value="70" placeholder="Servo position">
+                                <div class="input-group-addon">mm</div>
+                            </div>
+
+                        </div>
+
                         <!-- <label class="radio-inline">
                             <input class="svg2gcode-modetype" type="radio" name="com-chilipeppr-widget-svg2gcode-mode" value="mill"> Mill
                         </label>
@@ -325,7 +332,7 @@
                                 <div class="input-group-addon">mm/min</div>
                             </div>
                         </div> -->
-                    <!-- </div> -->
+                    </div>
 
                     <!-- <div class="form-group" xstyle="padding-left:18px;">
                         <span xstyle="font-size:11px;">Feedrate During Drawing</span>
@@ -340,9 +347,9 @@
                     <button style="margin-bottom:4px;" type="button" class="btn btn-default btn-sendgcodetows">Send Gcode to Workspace</button>
                     <textarea class="form-control gcode" rows="3" spellcheck="false"></textarea> -->
 
-                <!-- </div> -->
+                </div>
                 <!-- End Tab 2 -->
-            <!-- </div> -->
+            </div>
         </div>
         
     </div>

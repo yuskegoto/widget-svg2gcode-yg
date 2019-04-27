@@ -351,6 +351,9 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             // $('#' + this.id + ' .input-depthcut').change(this.generateGcode.bind(this));
             // $('#' + this.id + ' .input-feedrateplunge').change(this.generateGcode.bind(this));
             $('#' + this.id + ' .input-feedrate').change(this.generateGcode.bind(this));
+            $('#' + this.id + ' .input-motordistance').change(this.generateGcode.bind(this));
+            $('#' + this.id + ' .input-startpositionx').change(this.generateGcode.bind(this));
+            $('#' + this.id + ' .input-startpositiony').change(this.generateGcode.bind(this));
             // $('#' + this.id + ' .input-inflate').change(this.onInflateChange.bind(this));
             
             // assign button events
@@ -443,20 +446,23 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
         getSettings: function() {
             // get text
             this.options["svg"] = $('#' + this.id + ' .input-svg').val();
-            this.options["pointsperpath"] = parseInt($('#' + this.id + ' .input-pointsperpath').val());
+            // this.options["pointsperpath"] = parseInt($('#' + this.id + ' .input-pointsperpath').val());
             
-            this.options["holes"] = $('#' + this.id + ' .input-holes').is(":checked");
-            this.options["cut"] = $('#' + this.id + ' input[name=com-chilipeppr-widget-svg2gcode-cut]:checked').val();
-            this.options["dashPercent"] = $('#' + this.id + ' .input-dashPercent').val();
-            this.options["mode"] = $('#' + this.id + ' input[name=com-chilipeppr-widget-svg2gcode-mode]:checked').val();
-            this.options["laseron"] = $('#' + this.id + ' input[name=com-chilipeppr-widget-svg2gcode-laseron]:checked').val();
-            this.options["lasersvalue"] = $('#' + this.id + ' .input-svalue').val();
-            this.options["millclearanceheight"] = parseFloat($('#' + this.id + ' .input-clearance').val());
-            this.options["milldepthcut"] = parseFloat($('#' + this.id + ' .input-depthcut').val());
-            this.options["millfeedrateplunge"] = $('#' + this.id + ' .input-feedrateplunge').val();
-            this.options["inflate"] = parseFloat($('#' + this.id + ' .input-inflate').val());
+            // this.options["holes"] = $('#' + this.id + ' .input-holes').is(":checked");
+            // this.options["cut"] = $('#' + this.id + ' input[name=com-chilipeppr-widget-svg2gcode-cut]:checked').val();
+            // this.options["dashPercent"] = $('#' + this.id + ' .input-dashPercent').val();
+            // this.options["mode"] = $('#' + this.id + ' input[name=com-chilipeppr-widget-svg2gcode-mode]:checked').val();
+            // this.options["laseron"] = $('#' + this.id + ' input[name=com-chilipeppr-widget-svg2gcode-laseron]:checked').val();
+            // this.options["lasersvalue"] = $('#' + this.id + ' .input-svalue').val();
+            // this.options["millclearanceheight"] = parseFloat($('#' + this.id + ' .input-clearance').val());
+            // this.options["milldepthcut"] = parseFloat($('#' + this.id + ' .input-depthcut').val());
+            // this.options["millfeedrateplunge"] = $('#' + this.id + ' .input-feedrateplunge').val();
+            // this.options["inflate"] = parseFloat($('#' + this.id + ' .input-inflate').val());
             this.options["feedrate"] = $('#' + this.id + ' .input-feedrate').val();
-            //console.log("settings:", this.options);    
+            this.options["motordistance"] = $('#' + this.id + ' .input-motordistance').val();
+            this.options["startx"] = $('#' + this.id + ' .input-startpositionx').val();
+            this.options["starty"] = $('#' + this.id + ' .input-startpositiony').val();
+            //console.log("settings:", this.options);
 
             this.saveOptionsLocalStorage();
         },
@@ -801,16 +807,17 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             var txtGrp = this.svgGroup;
 
             var that = this;
-            var isLaserOn = false;
-            var isAtClearanceHeight = false;
+            // var isAtClearanceHeight = false;
             var isFeedrateSpecifiedAlready = false;
 
             // container for coordination
             var pts = [];
 
 /************loop for extracting coordination from svg to pts (world) coordination  ******/
-            var offsetX = 0;
-            var offsetY = 0;
+            //loading start position of the graphic
+            var offsetX = parseInt(this.options.startx, 10);
+            var offsetY = parseInt(this.options.starty, 10);
+
             txtGrp.traverse( function(child) {
                 if (child.type == "Line") {
 
@@ -825,7 +832,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                             // move to start point)
                             g += "G0 X" + worldPt.x.toFixed(3) + 
                                 " Y" + worldPt.y.toFixed(3) + "\n";
-                            var pt0 = { x: (worldPt.x + offsetX).toFixed(3) , y: (worldPt.y + offsetY).toFixed(3) , write: false };
+                            var pt0 = { x: (worldPt.x + offsetX) , y: (worldPt.y + offsetY), write: false };
                             pts.push(pt0);
                         }
                         else {
@@ -841,7 +848,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                                 " X" + (worldPt.x + offsetX).toFixed(3) + 
                                 " Y" + (worldPt.y + offsetY).toFixed(3) + "\n";
 
-                            var pt = { x: (worldPt.x + offsetX).toFixed(3), y: (worldPt.y + offsetY).toFixed(3), write: true };
+                            var pt = { x: (worldPt.x + offsetX), y: (worldPt.y + offsetY), write: true };
                             pts.push(pt);
                         }
                     }
@@ -866,7 +873,6 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
 
         },
 
-        width: 80,
         state: { x: 0, y: 0, write: false },
         // these settings are temporary! must be taken from input field
         servoDown: 30,
@@ -908,17 +914,14 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
         },
 
         getNextMove: function(pt){
-            // do normal feedrate move
-            var feedrate;
-            feedrate = this.options.feedrate;
 
-            var writingSpeed = feedrate / 2;
+            var move = { m1: 0, m2: 0, feedrate: 0, write: pt.write };
+            var motDistance = parseInt(this.options.motordistance, 10);
 
-            var move = { m1: 0, m2: 0, feedrate: 0, write: false };
-            var spd = feedrate;
-            if (pt.write) {
-                spd = writingSpeed;
-                move.write = true;
+            // speed setting, moving condition is only temporal!
+            var spd = parseInt(this.options.feedrate, 10);
+            if (!pt.write) {
+                spd *= 2;
             }
 
             // get movement value for each motors: differential version (delta)
@@ -927,7 +930,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
 
             // get movement value for each motors: absolute length version
             move.m1 = this.getLength(pt.x, pt.y);
-            move.m2 = this.getLength(pt.x - this.width, pt.y);
+            move.m2 = this.getLength(pt.x - motDistance, pt.y);
           
             var ptDist = this.getLength(this.state.x - pt.x, this.state.y - pt.y);
             // console.log("ptDist: ", ptDist);
