@@ -810,7 +810,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
 
 /************loop for extracting coordination from svg to pts (world) coordination  ******/
             var offsetX = 0;
-            var offsetY = 80;
+            var offsetY = 0;
             txtGrp.traverse( function(child) {
                 if (child.type == "Line") {
 
@@ -854,7 +854,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
 
             gcode = this.getGcode(pts);
             g = gcode;
-            console.log("gcode for pendeograph: ", gcode);
+            // console.log("gcode for pendeograph: ", gcode);
 
             $('#' + this.id + " .gcode").val(g).prop('disabled', false);
             $('#' + this.id + " .btn-sendgcodetows").prop('disabled', false);
@@ -921,18 +921,22 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                 move.write = true;
             }
 
-            // get delta for each motors
-            move.m1 = this.getDelta(this.state.x, this.state.y, pt.x, pt.y);
-            move.m2 = this.getDelta(this.state.x - this.width, this.state.y, pt.x - this.width, pt.y);
+            // get movement value for each motors: differential version (delta)
+            // move.m1 = this.getDelta(this.state.x, this.state.y, pt.x, pt.y);
+            // move.m2 = this.getDelta(this.state.x - this.width, this.state.y, pt.x - this.width, pt.y);
+
+            // get movement value for each motors: absolute length version
+            move.m1 = this.getLength(pt.x, pt.y);
+            move.m2 = this.getLength(pt.x - this.width, pt.y);
           
             var ptDist = this.getLength(this.state.x - pt.x, this.state.y - pt.y);
-            console.log("ptDist: ", ptDist);
-            console.log("m1: ", move.m1);
-            console.log("m2: ", move.m2);
-            console.log("ptX: ", pt.x);
-            console.log("ptY: ", pt.y);
-            console.log("stateX: ", this.state.x);
-            console.log("stateY: ", this.state.y);
+            // console.log("ptDist: ", ptDist);
+            // console.log("m1: ", move.m1);
+            // console.log("m2: ", move.m2);
+            // console.log("ptX: ", pt.x);
+            // console.log("ptY: ", pt.y);
+            // console.log("stateX: ", this.state.x);
+            // console.log("stateY: ", this.state.y);
 
             var movingTime = ptDist / spd;
             // imaginal moving distance on control plane to get motor speed for GRBL
@@ -2266,7 +2270,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
     
             var serializer = new XMLSerializer();
             var svgString = serializer.serializeToString(xmlDoc);
-            console.log("svg 2 text: ", svgString);
+            // console.log("svg 2 text: ", svgString);
             $("#path").val(svgString);    
         },
         /**

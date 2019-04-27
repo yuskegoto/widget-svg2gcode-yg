@@ -880,8 +880,12 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             // container for coordination
             var pts = [];
 
+/************loop for extracting coordination from svg to pts (world) coordination  ******/
+            var offsetX = 0;
+            var offsetY = 80;
             txtGrp.traverse( function(child) {
                 if (child.type == "Line") {
+
                     // let's create gcode for all points in line
                     for (i = 0; i < child.geometry.vertices.length; i++) {
                         var localPt = child.geometry.vertices[i];
@@ -889,58 +893,14 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                         // console.log("localPt: ", localPt)
                         // console.log("worldPt: ", worldPt)
                         
-                        if (i == 0) {
-                            // first point in line where we start lasering/milling
-                            // move to point
-                            
-                            // if milling, we need to move to clearance height
-                            // if (that.options.mode == "mill") {
-                            //     if (!isAtClearanceHeight) {
-                            //         g += "G0 Z" + that.options.millclearanceheight + "\n";
-                            //     }
-                            // }
-                            
-                            // move to start point
+                        if (i == 0) {                            
+                            // move to start point)
                             g += "G0 X" + worldPt.x.toFixed(3) + 
                                 " Y" + worldPt.y.toFixed(3) + "\n";
-                            var pt0 = { x: worldPt.x , y: worldPt.y , write: false };
+                            var pt0 = { x: (worldPt.x + offsetX).toFixed(3) , y: (worldPt.y + offsetY).toFixed(3) , write: false };
                             pts.push(pt0);
-                            
-                            // if milling move back to depth cut
-                            // if (that.options.mode == "mill") {
-                            //     var halfDistance = (that.options.millclearanceheight - that.options.milldepthcut) / 2;
-                            //     g += "G0 Z" + (that.options.millclearanceheight - halfDistance).toFixed(3)
-                            //         + "\n";
-                            //     g += "G1 F" + that.options.millfeedrateplunge + 
-                            //         " Z" + that.options.milldepthcut + "\n";
-                            //     isAtClearanceHeight = false;
-                            // }
-                            
                         }
                         else {
-                            
-                            // we are in a non-first line so this is normal moving
-                            
-                            // see if laser or milling
-                            // if (that.options.mode == "laser") {
-                                
-                            //     // if the laser is not on, we need to turn it on
-                            //     if (!isLaserOn) {
-                            //         if (that.options.laseron == "M3") {
-                            //             g += "M3 S" + that.options.lasersvalue;
-                            //         } else {
-                            //             g += that.options.laseron;
-                            //         }
-                            //         g += " (laser on)\n";
-                            //         isLaserOn = true;
-                            //     }
-                            // } else {
-                            //     // this is milling. if we are not at depth cut
-                            //     // we need to get there
-                                
-                                
-                            // }
-                            
                             // do normal feedrate move
                             var feedrate;
                             if (isFeedrateSpecifiedAlready) {
@@ -950,31 +910,14 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                                 isFeedrateSpecifiedAlready = true;
                             }
                             g += "G1" + feedrate + 
-                                " X" + worldPt.x.toFixed(3) + 
-                                " Y" + worldPt.y.toFixed(3) + "\n";
+                                " X" + (worldPt.x + offsetX).toFixed(3) + 
+                                " Y" + (worldPt.y + offsetY).toFixed(3) + "\n";
 
-                            var pt = { x: worldPt.x, y: worldPt.y, write: true };
+                            var pt = { x: (worldPt.x + offsetX).toFixed(3), y: (worldPt.y + offsetY).toFixed(3), write: true };
                             pts.push(pt);
                         }
                     }
                     
-                    // make feedrate have to get specified again on next line
-                    // if there is one
-                    // isFeedrateSpecifiedAlready = false;
-                    
-                    // see if laser or milling
-                    // if (that.options.mode == "laser") {
-                    //     // turn off laser at end of line
-                    //     isLaserOn = false;
-                    //     if (that.options.laseron == "M3")
-                    //         g += "M5 (laser off)\n";
-                    //     else
-                    //         g += "M9 (laser off)\n";
-                    // } else {
-                    //     // milling. move back to clearance height
-                    //     g += "G0 Z" + that.options.millclearanceheight + "\n";
-                    //     isAtClearanceHeight = true;
-                    // }
                 }
             });
             
@@ -994,18 +937,25 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             this.isGcodeInRegeneratingState = false;
 
         },
+
+        width: 80,
         state: { x: 0, y: 0, write: false },
-        // these settings are temporary! must be take from input field
+        // these settings are temporary! must be taken from input field
         servoDown: 30,
         servoUp: 75,
+
         getGcode: function(pts){
+            // init machine coordination status
+            this.state.x = 0;
+            this.state.y = this.width;
+            this.state.write = false;
+
             var code = "";
             for (var i in pts) {
                 //convert coordination to motor movement
-                // var param = getNextMove(pts[i]);
                 var param = this.getNextMove(pts[i]);
-                console.log(param);
-                // drop the pen if the pen is not down and it's now writing mode
+                // console.log(param);
+                // down the pen if the pen is currently up
                 if (param.write & !this.state.write) {
                     // Pen down
                     code += "M3 S" + this.servoDown + "\n";
@@ -1028,18 +978,16 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             }
             return code;
         },
-        width: 1000,
+
         getNextMove: function(pt){
             // do normal feedrate move
             var feedrate;
             feedrate = this.options.feedrate;
 
-            var writingSpeed = 1000;
+            var writingSpeed = feedrate / 2;
 
-            // var move = new Movement();
             var move = { m1: 0, m2: 0, feedrate: 0, write: false };
             var spd = feedrate;
-            // var spd = pt.getF();
             if (pt.write) {
                 spd = writingSpeed;
                 move.write = true;
@@ -1047,15 +995,19 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
 
             // get delta for each motors
             move.m1 = this.getDelta(this.state.x, this.state.y, pt.x, pt.y);
-            // move.m1 = getDelta(location.getX(), location.getY(), pt.getX(), pt.y);
             move.m2 = this.getDelta(this.state.x - this.width, this.state.y, pt.x - this.width, pt.y);
-            // move.m2 = getDelta(location.getX() - width, location.getY(), pt.x - width, pt.getY());
-
+          
             var ptDist = this.getLength(this.state.x - pt.x, this.state.y - pt.y);
-            // var ptDist = getLength(location.getX() - pt.getX(), location.getY() - pt.getY());
+            console.log("ptDist: ", ptDist);
+            console.log("m1: ", move.m1);
+            console.log("m2: ", move.m2);
+            console.log("ptX: ", pt.x);
+            console.log("ptY: ", pt.y);
+            console.log("stateX: ", this.state.x);
+            console.log("stateY: ", this.state.y);
+
             var movingTime = ptDist / spd;
             // imaginal moving distance on control plane to get motor speed for GRBL
-            // var motorDist12 = getLength(move.getM1(), move.getM2());
             var motorDist12 = this.getLength(move.m1, move.m2);
             if (movingTime == 0) {
                 // Exception handling divsion by zero
@@ -1066,11 +1018,9 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             }
 
             // update status
-            this.state.y = pt.y;
             this.state.x = pt.x;
-            // location.x = pt.getX();
-            // location.y = pt.getY();
-
+            this.state.y = pt.y;
+          
             return move;
         },
         getLength: function(locX, locY){
