@@ -63,6 +63,7 @@ http.createServer(function(req, res) {
     
     // var stdout = pushToGithubSync()
     var stdout = pushToGithubAsync();
+    console.log("return val: ");
     console.log(stdout);
     
     var json = {
