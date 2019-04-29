@@ -119,12 +119,12 @@ cprequire_test(["inline:com-zipwhip-widget-svg2gcode-yg"], function(myWidget) {
     // $('#' + myWidget.id).css('background', 'none');
 
     // test activate/deactivate
-    var testDeactivate = function() {
-        setTimeout(myWidget.unactivate.bind(myWidget), 5000);
-    }
-    var testReactivate = function() {
-        setTimeout(myWidget.activate.bind(myWidget), 7000);
-    }
+    // var testDeactivate = function() {
+    //     setTimeout(myWidget.unactivate.bind(myWidget), 5000);
+    // }
+    // var testReactivate = function() {
+    //     setTimeout(myWidget.activate.bind(myWidget), 7000);
+    // }
     //testDeactivate();
     // testReactivate();
 
@@ -243,7 +243,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             this.sceneRemoveMySceneGroup();
             this.sceneDisposeMySceneGroup();
             // hide floaty menus
-            this.hideFloatItems();
+            // this.hideFloatItems();
         },
         callbackForWorkspaceToShowUs: null,
         /**
@@ -557,80 +557,80 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
         //         this.wakeAnimate();
         //     }
         // },
-        simplifyPolygons: function(paths) {
+        // simplifyPolygons: function(paths) {
             
-            var scale = 10000;
-            ClipperLib.JS.ScaleUpPaths(paths, scale);
+        //     var scale = 10000;
+        //     ClipperLib.JS.ScaleUpPaths(paths, scale);
             
-            var newClipperPaths = ClipperLib.Clipper.SimplifyPolygons(paths, ClipperLib.PolyFillType.pftEvenOdd);
+        //     var newClipperPaths = ClipperLib.Clipper.SimplifyPolygons(paths, ClipperLib.PolyFillType.pftEvenOdd);
             
-            // scale back down
-            ClipperLib.JS.ScaleDownPaths(newClipperPaths, scale);
-            ClipperLib.JS.ScaleDownPaths(paths, scale);
-            return newClipperPaths;
+        //     // scale back down
+        //     ClipperLib.JS.ScaleDownPaths(newClipperPaths, scale);
+        //     ClipperLib.JS.ScaleDownPaths(paths, scale);
+        //     return newClipperPaths;
             
                 
-        },
-        drawClipperPaths: function (paths, color, opacity, z, zstep, isClosed, isAddDirHelper, name) {
-            console.log("drawClipperPaths");
-            var lineUnionMat = new THREE.LineBasicMaterial({
-                color: color,
-                transparent: true,
-                opacity: opacity
-            });
+        // },
+        // drawClipperPaths: function (paths, color, opacity, z, zstep, isClosed, isAddDirHelper, name) {
+        //     console.log("drawClipperPaths");
+        //     var lineUnionMat = new THREE.LineBasicMaterial({
+        //         color: color,
+        //         transparent: true,
+        //         opacity: opacity
+        //     });
 
-            if (z === undefined || z == null)
-                z = 0;
+        //     if (z === undefined || z == null)
+        //         z = 0;
 
-            if (zstep === undefined || zstep == null)
-                zstep = 0;
+        //     if (zstep === undefined || zstep == null)
+        //         zstep = 0;
 
-            if (isClosed === undefined || isClosed == null)
-                isClosed = true;
+        //     if (isClosed === undefined || isClosed == null)
+        //         isClosed = true;
             
-            var group = new THREE.Object3D();
-            if (name) group.name = name;
+        //     var group = new THREE.Object3D();
+        //     if (name) group.name = name;
 
-            for (var i = 0; i < paths.length; i++) {
-                var lineUnionGeo = new THREE.Geometry();
-                for (var j = 0; j < paths[i].length; j++) {
-                    var actualZ = z;
-                    if (zstep != 0) actualZ += zstep * j;
-                    lineUnionGeo.vertices.push(new THREE.Vector3(paths[i][j].X, paths[i][j].Y, actualZ));
+        //     for (var i = 0; i < paths.length; i++) {
+        //         var lineUnionGeo = new THREE.Geometry();
+        //         for (var j = 0; j < paths[i].length; j++) {
+        //             var actualZ = z;
+        //             if (zstep != 0) actualZ += zstep * j;
+        //             lineUnionGeo.vertices.push(new THREE.Vector3(paths[i][j].X, paths[i][j].Y, actualZ));
                     
-                    // does user want arrow helper to show direction
-                    if (isAddDirHelper) {
-                        /*
-                        var pt = { X: paths[i][j].X, Y: paths[i][j].Y, Z: actualZ };
-                        var ptNext;
-                        if (j + 1 >= paths[i].length)
-                            ptNext = {X: paths[i][0].X, Y: paths[i][0].Y, Z: actualZ };
-                        else
-                            ptNext = {X: paths[i][j+1].X, Y: paths[i][j+1].Y, Z: actualZ };
-                        // x2-x1,y2-y1
-                        var dir = new THREE.Vector3( ptNext.X - pt.X, ptNext.Y - pt.Y, ptNext.Z - pt.Z );
-                        var origin = new THREE.Vector3( pt.X, pt.Y, pt.Z );
-                        var length = 0.1;
-                        var hex = 0xff0000;
+        //             // does user want arrow helper to show direction
+        //             if (isAddDirHelper) {
+        //                 /*
+        //                 var pt = { X: paths[i][j].X, Y: paths[i][j].Y, Z: actualZ };
+        //                 var ptNext;
+        //                 if (j + 1 >= paths[i].length)
+        //                     ptNext = {X: paths[i][0].X, Y: paths[i][0].Y, Z: actualZ };
+        //                 else
+        //                     ptNext = {X: paths[i][j+1].X, Y: paths[i][j+1].Y, Z: actualZ };
+        //                 // x2-x1,y2-y1
+        //                 var dir = new THREE.Vector3( ptNext.X - pt.X, ptNext.Y - pt.Y, ptNext.Z - pt.Z );
+        //                 var origin = new THREE.Vector3( pt.X, pt.Y, pt.Z );
+        //                 var length = 0.1;
+        //                 var hex = 0xff0000;
                         
-                        var arrowHelper = new THREE.ArrowHelper( dir, origin, length, hex );
-                        group.add( arrowHelper );
-                        */
-                    }
-                }
-                // close it by connecting last point to 1st point
-                if (isClosed) lineUnionGeo.vertices.push(new THREE.Vector3(paths[i][0].X, paths[i][0].Y, z));
+        //                 var arrowHelper = new THREE.ArrowHelper( dir, origin, length, hex );
+        //                 group.add( arrowHelper );
+        //                 */
+        //             }
+        //         }
+        //         // close it by connecting last point to 1st point
+        //         if (isClosed) lineUnionGeo.vertices.push(new THREE.Vector3(paths[i][0].X, paths[i][0].Y, z));
 
 
-                var lineUnion = new THREE.Line(lineUnionGeo, lineUnionMat);
-                if (name) lineUnion.name = name;
+        //         var lineUnion = new THREE.Line(lineUnionGeo, lineUnionMat);
+        //         if (name) lineUnion.name = name;
                 
-                //lineUnion.position.set(0,-20,0);
-                group.add(lineUnion);
-            }
-            //this.sceneAdd(group);
-            return group;
-        },
+        //         //lineUnion.position.set(0,-20,0);
+        //         group.add(lineUnion);
+        //     }
+        //     //this.sceneAdd(group);
+        //     return group;
+        // },
         /**
          * Pass in a THREE.Line that is closed, meaning it was from a real shape and the end point
          * equals the start point because Clipper requires that. Make sure the
@@ -640,79 +640,79 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
          * We will return a new THREE.Line object or if multiple paths end up getting created
          * we will return a new THREE.Group() containing THREE.Line objects.
          */
-        inflateThreeJsLineShape: function(threeLine, delta) {
-            // debugger;
-            console.log("inflateThreeJsLineShape. threeLine:", threeLine, "delta:", delta);
+        // inflateThreeJsLineShape: function(threeLine, delta) {
+        //     // debugger;
+        //     console.log("inflateThreeJsLineShape. threeLine:", threeLine, "delta:", delta);
             
-            // convert Vector3 array to Clipper array
-            var clipperPath = this.threeJsVectorArrayToClipperArray(threeLine.geometry.vertices);
+        //     // convert Vector3 array to Clipper array
+        //     var clipperPath = this.threeJsVectorArrayToClipperArray(threeLine.geometry.vertices);
             
-            // double check there are points in array
-            if (clipperPath.length == 0) {
-                console.error("You did not pass in a THREE.Line that had any vertices. Huh?");
-            }
+        //     // double check there are points in array
+        //     if (clipperPath.length == 0) {
+        //         console.error("You did not pass in a THREE.Line that had any vertices. Huh?");
+        //     }
             
-            // double check that end point equals start point
-            if (clipperPath[0].X != clipperPath[clipperPath.length-1].X &&
-            clipperPath[0].Y != clipperPath[clipperPath.length-1].Y) {
-                console.error("Your start and end points do not match, so this is not a closed path therefore you cannot inflate it. Please close the path first.");
-            }
+        //     // double check that end point equals start point
+        //     if (clipperPath[0].X != clipperPath[clipperPath.length-1].X &&
+        //     clipperPath[0].Y != clipperPath[clipperPath.length-1].Y) {
+        //         console.error("Your start and end points do not match, so this is not a closed path therefore you cannot inflate it. Please close the path first.");
+        //     }
 
-            // check winding order
-            var orientation = ClipperLib.Clipper.Orientation(clipperPath);
-            console.log("orientation:", orientation);
+        //     // check winding order
+        //     var orientation = ClipperLib.Clipper.Orientation(clipperPath);
+        //     console.log("orientation:", orientation);
             
-            // check if hole
-            var isHole = false;
-            if (threeLine.userData.isHole) {
-                isHole = true;
-                delta = -1 * delta;
-            } else {
-                // it's not a hole
-                if (orientation == true) {
-                    // the winding order is correct
-                } else {
-                    // reverse it for correct winding order
-                    clipperPath.reverse();
-                }
-            }
-            var orientation = ClipperLib.Clipper.Orientation(clipperPath);
-            console.log("orientation:", orientation);
+        //     // check if hole
+        //     var isHole = false;
+        //     if (threeLine.userData.isHole) {
+        //         isHole = true;
+        //         delta = -1 * delta;
+        //     } else {
+        //         // it's not a hole
+        //         if (orientation == true) {
+        //             // the winding order is correct
+        //         } else {
+        //             // reverse it for correct winding order
+        //             clipperPath.reverse();
+        //         }
+        //     }
+        //     var orientation = ClipperLib.Clipper.Orientation(clipperPath);
+        //     console.log("orientation:", orientation);
             
-            // get inflate path. we will get back possibly multiple paths because an inflate
-            // or deflate can create dangling holes, etc.
-            var inflatedPaths = this.getInflatePath([clipperPath], delta);
+        //     // get inflate path. we will get back possibly multiple paths because an inflate
+        //     // or deflate can create dangling holes, etc.
+        //     var inflatedPaths = this.getInflatePath([clipperPath], delta);
             
-            var retObj;
+        //     var retObj;
             
-            if (inflatedPaths.length == 1) {
+        //     if (inflatedPaths.length == 1) {
                 
-                // we only got one path back. cool.
-                var newThreeLine = threeLine.clone();
-                newThreeLine.geometry.vertices = this.clipperArrayToThreeJsVectorArray(inflatedPaths[0]);
-                newThreeLine.geometry.verticesNeedUpdate = true;
-                retObj = newThreeLine;
+        //         // we only got one path back. cool.
+        //         var newThreeLine = threeLine.clone();
+        //         newThreeLine.geometry.vertices = this.clipperArrayToThreeJsVectorArray(inflatedPaths[0]);
+        //         newThreeLine.geometry.verticesNeedUpdate = true;
+        //         retObj = newThreeLine;
                 
-            } else {
+        //     } else {
                 
-                var newGroup = new THREE.Group();
+        //         var newGroup = new THREE.Group();
                 
-                // loop thru returned paths
-                for (var i in inflatedPaths) {
-                    var inflatedPath = inflatedPaths[i];
+        //         // loop thru returned paths
+        //         for (var i in inflatedPaths) {
+        //             var inflatedPath = inflatedPaths[i];
                     
-                    // convert back to THREE.Line
-                    var newThreeLine = threeLine.clone();
-                    newThreeLine.geometry.vertices = this.clipperArrayToThreeJsVectorArray(inflatedPath);
-                    newGroup.add(newThreeLine);
-                }
+        //             // convert back to THREE.Line
+        //             var newThreeLine = threeLine.clone();
+        //             newThreeLine.geometry.vertices = this.clipperArrayToThreeJsVectorArray(inflatedPath);
+        //             newGroup.add(newThreeLine);
+        //         }
                 
-                retObj = newGroup;
-            }
+        //         retObj = newGroup;
+        //     }
             
-            return retObj;
+        //     return retObj;
             
-        },
+        // },
         /**
          * Pass in something like geometry.vertices which is an array of Vector3's and
          * this method will pass back an array with Clipper formatting of [{X:nnn, Y:nnn}].
@@ -744,24 +744,24 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
          * have delta = 3. You can also set delta to a negative number to deflate. Make
          * sure the winding order is correct as well.
          */
-        getInflatePath: function (paths, delta, joinType) {
-            var scale = 10000;
-            ClipperLib.JS.ScaleUpPaths(paths, scale);
-            var miterLimit = 2;
-            var arcTolerance = 10;
-            joinType = joinType ? joinType : ClipperLib.JoinType.jtRound
-            var co = new ClipperLib.ClipperOffset(miterLimit, arcTolerance);
-            co.AddPaths(paths, joinType, ClipperLib.EndType.etClosedPolygon);
-            //var delta = 0.0625; // 1/16 inch endmill
-            var offsetted_paths = new ClipperLib.Paths();
-            co.Execute(offsetted_paths, delta * scale);
+        // getInflatePath: function (paths, delta, joinType) {
+        //     var scale = 10000;
+        //     ClipperLib.JS.ScaleUpPaths(paths, scale);
+        //     var miterLimit = 2;
+        //     var arcTolerance = 10;
+        //     joinType = joinType ? joinType : ClipperLib.JoinType.jtRound
+        //     var co = new ClipperLib.ClipperOffset(miterLimit, arcTolerance);
+        //     co.AddPaths(paths, joinType, ClipperLib.EndType.etClosedPolygon);
+        //     //var delta = 0.0625; // 1/16 inch endmill
+        //     var offsetted_paths = new ClipperLib.Paths();
+        //     co.Execute(offsetted_paths, delta * scale);
 
-            // scale back down
-            ClipperLib.JS.ScaleDownPaths(offsetted_paths, scale);
-            ClipperLib.JS.ScaleDownPaths(paths, scale);
-            return offsetted_paths;
+        //     // scale back down
+        //     ClipperLib.JS.ScaleDownPaths(offsetted_paths, scale);
+        //     ClipperLib.JS.ScaleDownPaths(paths, scale);
+        //     return offsetted_paths;
 
-        },
+        // },
         generateGcodeTimeoutPtr: null,
         isGcodeInRegeneratingState: false,
         /**
@@ -813,7 +813,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
 
             var that = this;
             // var isAtClearanceHeight = false;
-            var isFeedrateSpecifiedAlready = false;
+            // var isFeedrateSpecifiedAlready = false;
             // container for coordination
             var pts = [];
 
@@ -825,12 +825,44 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             txtGrp.traverse( function(child) {
                 if (child.type == "Line") {
 
+                    var totalLength = 0;
+                    // only for the test...
+                    var interpolateLength = 40;
+
+                    var interpolatedPt = new THREE.Geometry();
+                    interpolatedPt.vertices.push(child.geometry.vertices[0]);
+                    console.log(interpolatedPt.vertices[0]);
+
+                    for (i = 1; i < child.geometry.vertices.length; i++) {
+                        var lineLength = child.geometry.vertices[i - 1].distanceTo(child.geometry.vertices[i]);
+                        totalLength += lineLength;
+                    
+                        if (lineLength > interpolateLength){
+                            var itPts = Math.floor(lineLength / interpolateLength);
+                            for (var j = 1; j < itPts; j++){
+                                var pt = child.geometry.vertices[i - 1].lerp(child.geometry.vertices[i], j / itPts);
+                                interpolatedPt.vertices.push(pt);
+                                console.log(pt);
+                                console.log(j/itPts);
+                            }
+                        }
+                        interpolatedPt.vertices.push(child.geometry.vertices[i]);
+                        console.log(child.geometry.vertices[i]);
+                    }
+                    console.log("dist: ", totalLength);
+                    for (i = 0; i < interpolatedPt.vertices.length; i++) {
+                        console.log("pt: ", interpolatedPt.vertices[i]);
+                    }
+
+
                     // let's create gcode for all points in line
-                    for (i = 0; i < child.geometry.vertices.length; i++) {
-                        var localPt = child.geometry.vertices[i];
-                        var worldPt = grp.localToWorld(localPt.clone());
+                    // for (i = 0; i < child.geometry.vertices.length; i++) {
+                    for (i = 0; i < interpolatedPt.vertices.length; i++) {
+                        // var localPt = child.geometry.vertices[i];
                         // console.log("localPt: ", localPt)
-                        // console.log("worldPt: ", worldPt)
+                        // var worldPt = grp.localToWorld(localPt.clone());
+                        var worldPt = grp.localToWorld(interpolatedPt.vertices[i]);
+                        console.log("worldPt: ", worldPt);
                         
                         if (i == 0) {                            
                             // move to start point)
@@ -879,6 +911,19 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
 
             this.isGcodeInRegeneratingState = false;
 
+        },
+        svgSliceStep: 4,
+        sliceSvgPath: function(localPoint) {
+            var points = [];
+            var i;
+            for (i = 0; i <= this.svgSliceStep - 1; i++) {
+                var loc = pathLength * i / (this.svgSliceStep - 1);
+                var p = path.getPointAtLength(loc);
+                var pt = new THREE.Vector3(p.x, p.y, 0);
+
+                points.push(pt);
+            }
+            return points;
         },
 
         state: { x: 0, y: 0, write: false },
@@ -1052,6 +1097,10 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                 this.generateGcode();
             }
         },
+
+        /**
+         * actual function for extracting svg file
+         */
         extractSvgPathsFromSVGFile: function(file) {
             
             var fragment = Snap.parse(file);
@@ -1174,45 +1223,45 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                     shape.autoClose = true;
                     console.log("shape:", shape);
                     
-                    if (opts.cut == "dashed") {
+                    // if (opts.cut == "dashed") {
     				    
-    				    // figure out how many points to generate
-    				    var ptCnt = shape.getLength() / (opts.dashPercent / 10);
-    				    //console.log("ptCnt:", ptCnt);
-    				    shape.autoClose = false;
-    				    var spacedPoints = shape.createSpacedPointsGeometry( ptCnt );
-    				    console.log("spacedPoints", spacedPoints);
+    				//     // figure out how many points to generate
+    				//     var ptCnt = shape.getLength() / (opts.dashPercent / 10);
+    				//     //console.log("ptCnt:", ptCnt);
+    				//     shape.autoClose = false;
+    				//     var spacedPoints = shape.createSpacedPointsGeometry( ptCnt );
+    				//     console.log("spacedPoints", spacedPoints);
     				    
-    				    // we need to generate a ton of lines
-    				    // rather than one ongoing line
-    				    var isFirst = true;
-    				    var mypointsGeo = new THREE.Geometry();
+    				//     // we need to generate a ton of lines
+    				//     // rather than one ongoing line
+    				//     var isFirst = true;
+    				//     var mypointsGeo = new THREE.Geometry();
     				        
-    				    for (var iv in spacedPoints.vertices) {
-    				        var pt = spacedPoints.vertices[iv];
-    				        //console.log("pt:", pt, "isFirst:", isFirst, "mypointsGeo:", mypointsGeo);
+    				//     for (var iv in spacedPoints.vertices) {
+    				//         var pt = spacedPoints.vertices[iv];
+    				//         //console.log("pt:", pt, "isFirst:", isFirst, "mypointsGeo:", mypointsGeo);
     				        
-    				        if (isFirst) {
-    				            // first point, start the line
-    				            mypointsGeo = new THREE.Geometry(); // reset array to empty
-    				            mypointsGeo.vertices[0] = pt;
-        				        isFirst = false;
-    				        } else {
-    				            // is second point, finish the line
-    				            mypointsGeo.vertices[1] = pt;
-    				            var line = new THREE.Line( mypointsGeo, material );
-    				            svgGroup.add( line );
-    				            isFirst = true;
-    				        }
-    				        //console.log("working on point:", pt);
-    				    }
-    				    //charGroup.add( line );
+    				//         if (isFirst) {
+    				//             // first point, start the line
+    				//             mypointsGeo = new THREE.Geometry(); // reset array to empty
+    				//             mypointsGeo.vertices[0] = pt;
+        			// 	        isFirst = false;
+    				//         } else {
+    				//             // is second point, finish the line
+    				//             mypointsGeo.vertices[1] = pt;
+    				//             var line = new THREE.Line( mypointsGeo, material );
+    				//             svgGroup.add( line );
+    				//             isFirst = true;
+    				//         }
+    				//         //console.log("working on point:", pt);
+    				//     }
+    				//     //charGroup.add( line );
     				    
-    				    var particles = new THREE.Points( spacedPoints, new THREE.PointsMaterial( { color: 0xff0000, size: opts.size / 10 } ) );
-    				    particles.position.z = 1;
-    				    //charGroup.add(particles);
+    				//     var particles = new THREE.Points( spacedPoints, new THREE.PointsMaterial( { color: 0xff0000, size: opts.size / 10 } ) );
+    				//     particles.position.z = 1;
+    				//     //charGroup.add(particles);
     				    
-    				} else {
+    				// } else {
         				// solid line
 	                    var geometry = new THREE.ShapeGeometry( shape );
                         var lineSvg = new THREE.Line( geometry, material );
@@ -1226,7 +1275,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             			} ) );
             		    //particles.position.z = 1;
             		    svgGroup.add(particles);
-    				}
+    				// }
                     
 
                 }
@@ -1313,7 +1362,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             this.svgGroup = svgGroup;
             
 		    // now create our floating menus
-		    this.createFloatItems();
+		    // this.createFloatItems();
 		    
 		    return false;
 
@@ -1330,200 +1379,200 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
          * the bounding box of the SVG to let user adjust width and height
          * of the imported vector image.
          */
-        createFloatItems: function() {
-            console.log("createFloatItems. this.obj3dmeta:", this.obj3dmeta); 
+        // createFloatItems: function() {
+        //     console.log("createFloatItems. this.obj3dmeta:", this.obj3dmeta); 
             
-            // move width/height textboxes to top of DOM
-            // because their absolute positioning requires that
-            if (this.isFloatItemsSetup == false) {
+        //     // move width/height textboxes to top of DOM
+        //     // because their absolute positioning requires that
+        //     if (this.isFloatItemsSetup == false) {
                 
-                // we need to attach to the controls onchange event so
-                // if the user moves the 3d viewer around we re-render where
-                // we place the textboxes
-                this.obj3dmeta.widget.controls.addEventListener(
-                    'change', this.onCameraChange.bind(this)
-                );
+        //         // we need to attach to the controls onchange event so
+        //         // if the user moves the 3d viewer around we re-render where
+        //         // we place the textboxes
+        //         this.obj3dmeta.widget.controls.addEventListener(
+        //             'change', this.onCameraChange.bind(this)
+        //         );
                 
-                $('.test-info').text("did detach");
-                // move them and
-                // setup the onchange events
-                $('#' + this.id + "-widthbox")
-                    .detach().appendTo( "body" )
-                    .change(this.onWidthChange.bind(this))
-                    .removeClass("hidden");
-                $('#' + this.id + "-heightbox")
-                    .detach().appendTo( "body" )
-                    .change(this.onHeightChange.bind(this))
-                    .removeClass("hidden");
-                    // TODO add onchange
-                $('#' + this.id + "-alignbox")
-                    .detach().appendTo( "body" )
-                    .removeClass("hidden");
-                this.isFloatItemsSetup = true;
+        //         $('.test-info').text("did detach");
+        //         // move them and
+        //         // setup the onchange events
+        //         $('#' + this.id + "-widthbox")
+        //             .detach().appendTo( "body" )
+        //             .change(this.onWidthChange.bind(this))
+        //             .removeClass("hidden");
+        //         $('#' + this.id + "-heightbox")
+        //             .detach().appendTo( "body" )
+        //             .change(this.onHeightChange.bind(this))
+        //             .removeClass("hidden");
+        //             // TODO add onchange
+        //         $('#' + this.id + "-alignbox")
+        //             .detach().appendTo( "body" )
+        //             .removeClass("hidden");
+        //         this.isFloatItemsSetup = true;
                 
-                // if window resizes, reset the camera and textboxes
-                $(window).resize(this.onCameraChange.bind(this));
+        //         // if window resizes, reset the camera and textboxes
+        //         $(window).resize(this.onCameraChange.bind(this));
                 
-                // setup aspect locked button 
-                $('#' + this.id + "-widthbox .btn-aspect").click(this.onAspectLockedBtnClick.bind(this));
-                $('#' + this.id + "-heightbox .btn-aspect").click(this.onAspectLockedBtnClick.bind(this));
+        //         // setup aspect locked button 
+        //         $('#' + this.id + "-widthbox .btn-aspect").click(this.onAspectLockedBtnClick.bind(this));
+        //         $('#' + this.id + "-heightbox .btn-aspect").click(this.onAspectLockedBtnClick.bind(this));
 
-                // setup align buttons
-                $('#' + this.id + "-alignbox button").click(this.onAlignButtonClicked.bind(this));
+        //         // setup align buttons
+        //         $('#' + this.id + "-alignbox button").click(this.onAlignButtonClicked.bind(this));
                 
-                // setup xy value changes
-                $('#' + this.id + "-alignbox .input-x").on("change", this.onXYChange.bind(this));
-                $('#' + this.id + "-alignbox .input-y").on("change", this.onXYChange.bind(this));
+        //         // setup xy value changes
+        //         $('#' + this.id + "-alignbox .input-x").on("change", this.onXYChange.bind(this));
+        //         $('#' + this.id + "-alignbox .input-y").on("change", this.onXYChange.bind(this));
             
-            } else {
-                console.warn("divs already positioned");
-                this.showFloatItems();
-            }
+        //     } else {
+        //         console.warn("divs already positioned");
+        //         this.showFloatItems();
+        //     }
             
-            // setup width and height values in the textboxes
-            var bbox = new THREE.Box3().setFromObject(this.svgParentGroup);
-            console.log("creating textboxes. bbox:", bbox);
-            bbox["width"] = bbox.max.x - bbox.min.x;
-            bbox["height"] = bbox.max.y - bbox.min.y;
-            this.originalBbox = bbox;
-            $('#' + this.id + "-widthbox .input-widthbox").val(bbox.width.toFixed(3));
-            $('#' + this.id + "-heightbox .input-heightbox").val(bbox.height.toFixed(3));
-            $('#' + this.id + "-alignbox .input-x").val("0");
-            $('#' + this.id + "-alignbox .input-y").val("0");
+        //     // setup width and height values in the textboxes
+        //     var bbox = new THREE.Box3().setFromObject(this.svgParentGroup);
+        //     console.log("creating textboxes. bbox:", bbox);
+        //     bbox["width"] = bbox.max.x - bbox.min.x;
+        //     bbox["height"] = bbox.max.y - bbox.min.y;
+        //     this.originalBbox = bbox;
+        //     $('#' + this.id + "-widthbox .input-widthbox").val(bbox.width.toFixed(3));
+        //     $('#' + this.id + "-heightbox .input-heightbox").val(bbox.height.toFixed(3));
+        //     $('#' + this.id + "-alignbox .input-x").val("0");
+        //     $('#' + this.id + "-alignbox .input-y").val("0");
             
-            // we now need to reposition our textboxes as if the camera was moved
-            //setTimeout(this.onCameraChange.bind(this), 50);
-            this.onCameraChange(); //.bind(this);
+        //     // we now need to reposition our textboxes as if the camera was moved
+        //     //setTimeout(this.onCameraChange.bind(this), 50);
+        //     this.onCameraChange(); //.bind(this);
             
-        },
-        showFloatItems: function() {
-            $('#' + this.id + "-widthbox").removeClass("hidden");
-            $('#' + this.id + "-heightbox").removeClass("hidden");
-            $('#' + this.id + "-alignbox").removeClass("hidden");
-        },
-        hideFloatItems: function() {
-            $('#' + this.id + "-widthbox").addClass("hidden");
-            $('#' + this.id + "-heightbox").addClass("hidden");
-            $('#' + this.id + "-alignbox").addClass("hidden");
-        },
-        onAlignButtonClicked: function(evt) {
-            var tEl = $(evt.currentTarget);
-            console.log("align btn clicked. evt:", evt, tEl);
+        // },
+        // showFloatItems: function() {
+        //     $('#' + this.id + "-widthbox").removeClass("hidden");
+        //     $('#' + this.id + "-heightbox").removeClass("hidden");
+        //     $('#' + this.id + "-alignbox").removeClass("hidden");
+        // },
+        // hideFloatItems: function() {
+        //     $('#' + this.id + "-widthbox").addClass("hidden");
+        //     $('#' + this.id + "-heightbox").addClass("hidden");
+        //     $('#' + this.id + "-alignbox").addClass("hidden");
+        // },
+        // onAlignButtonClicked: function(evt) {
+        //     var tEl = $(evt.currentTarget);
+        //     console.log("align btn clicked. evt:", evt, tEl);
             
-            var bbox = new THREE.Box3().setFromObject(this.svgGroup);
-            console.log("bbox:", bbox);
+        //     var bbox = new THREE.Box3().setFromObject(this.svgGroup);
+        //     console.log("bbox:", bbox);
             
-            if (tEl.hasClass("btn-vert-left")) {
-                // align vertical left of center
-                console.log("vert align left");
-                this.svgParentGroup.position.x = -1 * (bbox.max.x - bbox.min.x);
-            }
-            else if (tEl.hasClass("btn-vert-center")) {
-                console.log("vert align center");
-                this.svgParentGroup.position.x = -1 * (bbox.max.x - bbox.min.x) / 2;
-            }
-            else if (tEl.hasClass("btn-vert-right")) {
-                console.log("vert align right");
-                this.svgParentGroup.position.x = 0; //(bbox.max.x - bbox.min.x) / 2;
-            }
-            else if (tEl.hasClass("btn-horiz-top")) {
-                console.log("horiz align top");
-                this.svgParentGroup.position.y = 0;
-            }
-            else if (tEl.hasClass("btn-horiz-middle")) {
-                console.log("horiz align middle");
-                this.svgParentGroup.position.y = -1 * (bbox.max.y - bbox.min.y) / 2;
-            }
-            else if (tEl.hasClass("btn-horiz-bottom")) {
-                console.log("horiz align bottom");
-                this.svgParentGroup.position.y = -1 * (bbox.max.y - bbox.min.y); 
-            }
+        //     if (tEl.hasClass("btn-vert-left")) {
+        //         // align vertical left of center
+        //         console.log("vert align left");
+        //         this.svgParentGroup.position.x = -1 * (bbox.max.x - bbox.min.x);
+        //     }
+        //     else if (tEl.hasClass("btn-vert-center")) {
+        //         console.log("vert align center");
+        //         this.svgParentGroup.position.x = -1 * (bbox.max.x - bbox.min.x) / 2;
+        //     }
+        //     else if (tEl.hasClass("btn-vert-right")) {
+        //         console.log("vert align right");
+        //         this.svgParentGroup.position.x = 0; //(bbox.max.x - bbox.min.x) / 2;
+        //     }
+        //     else if (tEl.hasClass("btn-horiz-top")) {
+        //         console.log("horiz align top");
+        //         this.svgParentGroup.position.y = 0;
+        //     }
+        //     else if (tEl.hasClass("btn-horiz-middle")) {
+        //         console.log("horiz align middle");
+        //         this.svgParentGroup.position.y = -1 * (bbox.max.y - bbox.min.y) / 2;
+        //     }
+        //     else if (tEl.hasClass("btn-horiz-bottom")) {
+        //         console.log("horiz align bottom");
+        //         this.svgParentGroup.position.y = -1 * (bbox.max.y - bbox.min.y); 
+        //     }
     
-            $('#' + this.id + "-alignbox .input-x").val(this.svgParentGroup.position.x);
-            $('#' + this.id + "-alignbox .input-y").val(this.svgParentGroup.position.y);
+        //     $('#' + this.id + "-alignbox .input-x").val(this.svgParentGroup.position.x);
+        //     $('#' + this.id + "-alignbox .input-y").val(this.svgParentGroup.position.y);
     
-            //chilipeppr.publish('/com-chilipeppr-widget-3dviewer/viewextents' );
-            this.obj3dmeta.widget.wakeAnimate();
-            this.onCameraChange(); //.bind(this);
-            this.generateGcode();
-        },
-        isAspectLocked: true,
-        onAspectLockedBtnClick: function(evt) {
-            console.log("aspect btn clicked");
-            console.log("svg:", $('.' + this.id + "-textbox .svg-unlocked"));
-            if (this.isAspectLocked) {
-                // $('.' + this.id + "-textbox .aspect-txt").text("Aspect Unlocked");
-                $('.' + this.id + "-textbox .svg-unlocked").each(function() { this.classList.remove("hidden");});
-                $('.' + this.id + "-textbox .glyphicon-lock").addClass("hidden");
+        //     //chilipeppr.publish('/com-chilipeppr-widget-3dviewer/viewextents' );
+        //     this.obj3dmeta.widget.wakeAnimate();
+        //     this.onCameraChange(); //.bind(this);
+        //     this.generateGcode();
+        // },
+        // isAspectLocked: true,
+        // onAspectLockedBtnClick: function(evt) {
+        //     console.log("aspect btn clicked");
+        //     console.log("svg:", $('.' + this.id + "-textbox .svg-unlocked"));
+        //     if (this.isAspectLocked) {
+        //         // $('.' + this.id + "-textbox .aspect-txt").text("Aspect Unlocked");
+        //         $('.' + this.id + "-textbox .svg-unlocked").each(function() { this.classList.remove("hidden");});
+        //         $('.' + this.id + "-textbox .glyphicon-lock").addClass("hidden");
                 
-                this.isAspectLocked = false;
-            } else {
-                // $('.' + this.id + "-textbox .aspect-txt").text("Aspect Locked");
-                $('.' + this.id + "-textbox .svg-unlocked").each(function() { this.classList.add("hidden");});
-                $('.' + this.id + "-textbox .glyphicon-lock").removeClass("hidden");
-                this.isAspectLocked = true;
-            }
-        },
+        //         this.isAspectLocked = false;
+        //     } else {
+        //         // $('.' + this.id + "-textbox .aspect-txt").text("Aspect Locked");
+        //         $('.' + this.id + "-textbox .svg-unlocked").each(function() { this.classList.add("hidden");});
+        //         $('.' + this.id + "-textbox .glyphicon-lock").removeClass("hidden");
+        //         this.isAspectLocked = true;
+        //     }
+        // },
         //widthHeightChangeTimeoutPtr: null,
-        onWidthChange: function(evt) {
-            console.log("onWidthChange. evt:", evt);
-            // get new width
-            var w = $('#' + this.id + "-widthbox .input-widthbox").val();
-            // set scale
-            var wScale = w / this.originalBbox.width;
-            this.svgParentGroup.scale.x = wScale;
-            this.svgParentGroup.scale.y = wScale;
+        // onWidthChange: function(evt) {
+        //     console.log("onWidthChange. evt:", evt);
+        //     // get new width
+        //     var w = $('#' + this.id + "-widthbox .input-widthbox").val();
+        //     // set scale
+        //     var wScale = w / this.originalBbox.width;
+        //     this.svgParentGroup.scale.x = wScale;
+        //     this.svgParentGroup.scale.y = wScale;
             
-            // calc new height since we have aspect ratio locked
-            var h = this.originalBbox.height * wScale;
-            $('#' + this.id + "-heightbox .input-heightbox").val(h.toFixed(3));
+        //     // calc new height since we have aspect ratio locked
+        //     var h = this.originalBbox.height * wScale;
+        //     $('#' + this.id + "-heightbox .input-heightbox").val(h.toFixed(3));
             
-            // wake the 3d viewer just in case
-            this.obj3dmeta.widget.wakeAnimate();
+        //     // wake the 3d viewer just in case
+        //     this.obj3dmeta.widget.wakeAnimate();
 
-            // since the three.js objects were resized here
-            // we need to reposition everything in the viewer
-            // if (this.widthHeightChangeTimeoutPtr) {
-                //console.log("cleared last timeout cuz don't need");
-                // clearTimeout(this.widthHeightChangeTimeoutPtr);
-            // }
-            //this.widthHeightChangeTimeoutPtr = setTimeout(this.onCameraChange.bind(this), 100);
-            this.onCameraChange(); //.bind(this);
-            this.generateGcode();
+        //     // since the three.js objects were resized here
+        //     // we need to reposition everything in the viewer
+        //     // if (this.widthHeightChangeTimeoutPtr) {
+        //         //console.log("cleared last timeout cuz don't need");
+        //         // clearTimeout(this.widthHeightChangeTimeoutPtr);
+        //     // }
+        //     //this.widthHeightChangeTimeoutPtr = setTimeout(this.onCameraChange.bind(this), 100);
+        //     this.onCameraChange(); //.bind(this);
+        //     this.generateGcode();
 
-        },
-        onHeightChange: function(evt) {
-            console.log("onHeightChange. evt:", evt);
+        // },
+        // onHeightChange: function(evt) {
+        //     console.log("onHeightChange. evt:", evt);
             
-            // get new height
-            var h = $('#' + this.id + "-heightbox .input-heightbox").val();
-            // set scale
-            var hScale = h / this.originalBbox.height;
-            this.svgParentGroup.scale.x = hScale;
-            this.svgParentGroup.scale.y = hScale;
+        //     // get new height
+        //     var h = $('#' + this.id + "-heightbox .input-heightbox").val();
+        //     // set scale
+        //     var hScale = h / this.originalBbox.height;
+        //     this.svgParentGroup.scale.x = hScale;
+        //     this.svgParentGroup.scale.y = hScale;
             
-            // calc new width since we have aspect ratio locked
-            var w = this.originalBbox.width * hScale;
-            $('#' + this.id + "-widthbox .input-widthbox").val(w.toFixed(3));
+        //     // calc new width since we have aspect ratio locked
+        //     var w = this.originalBbox.width * hScale;
+        //     $('#' + this.id + "-widthbox .input-widthbox").val(w.toFixed(3));
             
-            // wake the 3d viewer just in case
-            this.obj3dmeta.widget.wakeAnimate();
+        //     // wake the 3d viewer just in case
+        //     this.obj3dmeta.widget.wakeAnimate();
 
-            this.onCameraChange(); //.bind(this);
-            this.generateGcode();
-        },
-        onXYChange: function(evt) {
-            console.log("onXYChange. evt:", evt);
+        //     this.onCameraChange(); //.bind(this);
+        //     this.generateGcode();
+        // },
+        // onXYChange: function(evt) {
+        //     console.log("onXYChange. evt:", evt);
             
-            this.svgParentGroup.position.x = $('#' + this.id + "-alignbox .input-x").val();
-            this.svgParentGroup.position.y = $('#' + this.id + "-alignbox .input-y").val();
+        //     this.svgParentGroup.position.x = $('#' + this.id + "-alignbox .input-x").val();
+        //     this.svgParentGroup.position.y = $('#' + this.id + "-alignbox .input-y").val();
             
-            // wake the 3d viewer just in case
-            this.obj3dmeta.widget.wakeAnimate();
+        //     // wake the 3d viewer just in case
+        //     this.obj3dmeta.widget.wakeAnimate();
 
-            this.onCameraChange(); //.bind(this);
-            this.generateGcode();
-        },
+        //     this.onCameraChange(); //.bind(this);
+        //     this.generateGcode();
+        // },
         cameraChangeTimeoutPtr: null,
         isCameraChangeTimeoutExist: false,
         /**
