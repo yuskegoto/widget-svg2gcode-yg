@@ -1213,7 +1213,7 @@ var pushToGithubSync = function() {
   stdout += "> git push\n";
   // stdout += proc.execSync('git add *; git commit -m "Made some changes to ChiliPeppr test workspace on local"; git push;', { encoding: 'utf8' });
   stdout += proc.execSync('git add .', { encoding: 'utf8' });
-  stdout += proc.execSync('git commit -m "Made some changes to ChiliPeppr test workspace on local"', { encoding: 'utf8' });
+  stdout += proc.execSync("git commit -m 'hi'", { encoding: 'utf8' });
   console.log("Pushed to github sync. Stdout:", stdout);
   
   return stdout;
