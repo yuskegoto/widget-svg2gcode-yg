@@ -62,7 +62,8 @@ http.createServer(function(req, res) {
     console.log("/pushtogithub called");
     
     // var stdout = pushToGithubSync()
-    var stdout = pushToGithubAsync()
+    var stdout = pushToGithubAsync();
+    console.log(stdout);
     
     var json = {
       success: true,
