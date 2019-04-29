@@ -1201,25 +1201,25 @@ var pushToGithub = function() {
   console.log("Pushed to github");
 }
 
-var pushToGithubSync = function() {
+// var pushToGithubSync = function() {
   
-  var proc = require('child_process');
-  console.log("in the git sync process");
-  // git add *
-  // git commit -m "Made some changes to ChiliPeppr widget using Cloud9"
-  // git push
-  var stdout = "";
-  stdout += "> git add *\n";
-  stdout += '> git commit -m "Made some changes to ChiliPeppr myWorkspace"\n';
-  stdout += "> git push\n";
-  // stdout += proc.execSync('git add *; git commit -m "Made some changes to ChiliPeppr test workspace on local"; git push;', { encoding: 'utf8' });
-  stdout += proc.execSync('git add .', { encoding: 'utf8' });
-  stdout += proc.execSync('git commit', { encoding: 'utf8' });
-  stdout += proc.execSync('git push', { encoding: 'utf8' });
-  console.log("Pushed to github sync. Stdout:", stdout);
+//   var proc = require('child_process');
+//   console.log("in the git sync process");
+//   // git add *
+//   // git commit -m "Made some changes to ChiliPeppr widget using Cloud9"
+//   // git push
+//   var stdout = "";
+//   stdout += "> git add *\n";
+//   stdout += '> git commit -m "Made some changes to ChiliPeppr myWorkspace"\n';
+//   stdout += "> git push\n";
+//   // stdout += proc.execSync('git add *; git commit -m "Made some changes to ChiliPeppr test workspace on local"; git push;', { encoding: 'utf8' });
+//   stdout += proc.execSync('git add .', { encoding: 'utf8' });
+//   stdout += proc.execSync('git commit', { encoding: 'utf8' });
+//   stdout += proc.execSync('git push', { encoding: 'utf8' });
+//   console.log("Pushed to github sync. Stdout:", stdout);
   
-  return stdout;
-}
+//   return stdout;
+// }
 
 var pushToGithubAsync = function() {
   var exec = require('child_process').exec;
@@ -1228,7 +1228,7 @@ var pushToGithubAsync = function() {
     // command output is in stdout
     console.log("stdout:", stdout1, "stderr:", stderr1);
     // exec('bash -c "git commit -m \\"Made some changes to ChiliPeppr test workspace\\""', function(error2, stdout2, stderr2) {
-    exec('git commit -m "Made some changes to ChiliPeppr test workspace"', function (error2, stdout2, stderr2) {
+    exec('git commit -m "Auto commit for Pendeograph workspace"', function (error2, stdout2, stderr2) {
       // command output is in stdout
       console.log("stdout:", stdout2, "stderr:", stderr2);
       exec('git push', function(error3, stdout3, stderr3) {
