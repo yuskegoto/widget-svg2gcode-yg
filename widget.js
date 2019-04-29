@@ -351,7 +351,8 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             // $('#' + this.id + ' .input-depthcut').change(this.generateGcode.bind(this));
             // $('#' + this.id + ' .input-feedrateplunge').change(this.generateGcode.bind(this));
             // $('#' + this.id + ' .input-inflate').change(this.onInflateChange.bind(this));
-            $('#' + this.id + ' .input-feedrate').change(this.generateGcode.bind(this));
+            $('#' + this.id + ' .input-feedratewrite').change(this.generateGcode.bind(this));
+            $('#' + this.id + ' .input-feedratemove').change(this.generateGcode.bind(this));
             $('#' + this.id + ' .input-motordistance').change(this.generateGcode.bind(this));
             $('#' + this.id + ' .input-startpositionx').change(this.generateGcode.bind(this));
             $('#' + this.id + ' .input-startpositiony').change(this.generateGcode.bind(this));
@@ -461,7 +462,8 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             // this.options["milldepthcut"] = parseFloat($('#' + this.id + ' .input-depthcut').val());
             // this.options["millfeedrateplunge"] = $('#' + this.id + ' .input-feedrateplunge').val();
             // this.options["inflate"] = parseFloat($('#' + this.id + ' .input-inflate').val());
-            this.options["feedrate"] = $('#' + this.id + ' .input-feedrate').val();
+            this.options["feedratewrite"] = $('#' + this.id + ' .input-feedratewrite').val();
+            this.options["feedratemove"] = $('#' + this.id + ' .input-feedratemove').val();
             this.options["motordistance"] = $('#' + this.id + ' .input-motordistance').val();
             this.options["startx"] = $('#' + this.id + ' .input-startpositionx').val();
             this.options["starty"] = $('#' + this.id + ' .input-startpositiony').val();
@@ -838,20 +840,20 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                             previousPt = worldPt;
                         }
                         else {
-                            // do normal feedrate move
+                            // do normal writing movement
                             var lineLength = previousPt.distanceTo(worldPt);
                             totalLength += lineLength;
                             
                             // interpolate between lines
                             if (lineLength > interpolateLength){
                                 var itPts = Math.floor(lineLength / interpolateLength);
-                                console.log("Interpolated Width: ", lineLength / itPts);
+                                // console.log("Interpolated Width: ", lineLength / itPts);
                                 for (var j = 1; j < itPts; j++){
                                     var ptThree = previousPt.lerp(worldPt, j / itPts);
                                     var pt = { x: ptThree.x , y: ptThree.y, write: true };
                                     pts.push(pt);
                                     // console.log(pt);
-                                    console.log(j/itPts);
+                                    // console.log(j/itPts);
                                 }
                             }
 
@@ -879,14 +881,20 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
         },
         // container for drawing module's status
         penState: { x: 0, y: 0, write: false },
-
+        offsetX : 0,
+        offsetY : 0,
+        updateOffset: function(){
+            this.offsetX = parseInt(this.options.startx, 10); 
+            this.offsetY = parseInt(this.options.starty, 10);
+        },
         getGcode: function(pts){
             // init machine coordination status
-            var offsetX = parseInt(this.options.startx, 10);
-            var offsetY = parseInt(this.options.starty, 10);
+            // var offsetX = parseInt(this.options.startx, 10);
+            // var offsetY = parseInt(this.options.starty, 10);
+            this.updateOffset();
 
-            this.penState.x = offsetX;
-            this.penState.y = offsetY;
+            this.penState.x = this.offsetX;
+            this.penState.y = this.offsetY;
             this.penState.write = false;
 
             var servoUp = this.options.servoup;
@@ -910,6 +918,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                     // release write mode
                     this.penState.write = false;
                 }
+
                 code += "G1 X";
                 code += param.m1.toFixed(3);
                 code += " Y";
@@ -927,22 +936,28 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             var motDistance = parseInt(this.options.motordistance, 10);
 
             // speed setting, moving condition is only temporal!
-            var spd = parseInt(this.options.feedrate, 10);
-            if (!pt.write) {
-                spd *= 2;
+            var spd;
+            if (pt.write) {
+                spd = parseInt(this.options.feedratewrite, 10);
+            }
+            else{
+                spd = parseInt(this.options.feedratemove, 10);
+                
             }
 
             // get movement value for each motors: differential version (delta)
             // var offsetX = parseInt(this.options.startx, 10);
             // var offsetY = parseInt(this.options.starty, 10);
+
             // move.m1 = this.getDelta(this.penState.x + offsetX, this.penState.y + offsetY, pt.x + offsetX, pt.y + offsetY);
             // move.m2 = this.getDelta(this.penState.x - motDistance + offsetX, this.penState.y + offsetY, pt.x - motDistance + offsetX, pt.y + offsetY);
-
+            move.m1 = this.getDelta(this.penState.x, this.penState.y, pt.x + this.offsetX, pt.y + this.offsetY);
+            move.m2 = this.getDelta(this.penState.x - motDistance, this.penState.y, pt.x - motDistance + this.offsetX, pt.y + this.offsetY);
 
             // get movement value for each motors: absolute length version
-            move.m1 = this.getLength(pt.x, pt.y);
-            move.m2 = this.getLength(pt.x - motDistance, pt.y);
-          
+            // move.m1 = this.getLength(pt.x + this.offsetX , pt.y + this.offsetY);
+            // move.m2 = this.getLength(pt.x - motDistance + this.offsetX, pt.y + this.offsetY);
+            
             var ptDist = this.getLength(this.penState.x - pt.x, this.penState.y - pt.y);
             // console.log("ptDist: ", ptDist);
             // console.log("m1: ", move.m1);

@@ -76,19 +76,14 @@
                     <!-- <button style="margin-bottom:4px;" type="button" class="btn btn-default btn-loadgcode">Load File</button> -->
                     <a href="javascript:" class="load-logo" style="font-size:11px;margin-top:0;padding-top:0;">Load Example ChiliPeppr Logo</a>
                     <textarea id="path" class="form-control input-svg" rows="5" spellcheck="false">
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
-    y="0px" viewBox="0 0 800 700" style="enable-background:new 0 0 800 700;" xml:space="preserve">
-    <style type="text/css">
-        .st0 {
-            fill: #FFFFFF;
-            stroke: #000000;
-            stroke-miterlimit: 10;
-        }
-    </style>
-    <path id="line" class="st0" d="M440,390h-80v-80h80V390z" />
-</svg>
+                    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 800 700" style="enable-background:new 0 0 800 700;" xml:space="preserve">
+                        <style type="text/css">
+                            .st0{fill:#FFFFFF;stroke:#000000;stroke-miterlimit:10;}
+                        </style>
+                        <path id="line" class="st0" d="M360,390v-80h80v80H360z"/>
+                    </svg>
 
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
@@ -314,7 +309,13 @@
                     <div class="form-group" xstyle="padding-left:18px;">
                         <p style="margin-top:3px;margin-bottom:0;font-size:11px;">Pen Speed While Drawing</p>
                         <div class="input-group">
-                            <input type="number" min="0" max="5000" step="10" class="form-control input-feedrate" value="200"
+                            <input type="number" min="0" max="5000" step="10" class="form-control input-feedratewrite" value="200"
+                                placeholder="Enter feedrate">
+                            <div class="input-group-addon">mm/min</div>
+                        </div>
+                        <p style="margin-top:3px;margin-bottom:0;font-size:11px;">Pen Speed While Moving</p>
+                        <div class="input-group">
+                            <input type="number" min="0" max="5000" step="10" class="form-control input-feedratemove" value="400"
                                 placeholder="Enter feedrate">
                             <div class="input-group-addon">mm/min</div>
                         </div>

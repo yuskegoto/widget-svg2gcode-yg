@@ -1201,8 +1201,8 @@ var pushToGithub = function() {
   console.log("Pushed to github");
 }
 
-// var pushToGithubSync = function() {
-  
+// git sync push process, not wroking now...
+// var pushToGithubSync = function() {  
 //   var proc = require('child_process');
 //   console.log("in the git sync process");
 //   // git add *
