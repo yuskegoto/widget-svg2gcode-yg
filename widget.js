@@ -942,23 +942,19 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             }
             else{
                 spd = parseInt(this.options.feedratemove, 10);
-                
             }
 
-            // get movement value for each motors: differential version (delta)
-            // var offsetX = parseInt(this.options.startx, 10);
-            // var offsetY = parseInt(this.options.starty, 10);
+            var offsetPt = {x: pt.x + this.offsetX, y: pt.y + this.offsetY};
 
-            // move.m1 = this.getDelta(this.penState.x + offsetX, this.penState.y + offsetY, pt.x + offsetX, pt.y + offsetY);
-            // move.m2 = this.getDelta(this.penState.x - motDistance + offsetX, this.penState.y + offsetY, pt.x - motDistance + offsetX, pt.y + offsetY);
-            move.m1 = this.getDelta(this.penState.x, this.penState.y, pt.x + this.offsetX, pt.y + this.offsetY);
-            move.m2 = this.getDelta(this.penState.x - motDistance, this.penState.y, pt.x - motDistance + this.offsetX, pt.y + this.offsetY);
+            // get movement value for each motors: differential version (delta)
+            move.m1 = this.getDelta(this.penState.x, this.penState.y, offsetPt.x, offsetPt.y);
+            move.m2 = this.getDelta(this.penState.x - motDistance, this.penState.y, offsetPt.x - motDistance, offsetPt.y);
 
             // get movement value for each motors: absolute length version
-            // move.m1 = this.getLength(pt.x + this.offsetX , pt.y + this.offsetY);
-            // move.m2 = this.getLength(pt.x - motDistance + this.offsetX, pt.y + this.offsetY);
+            // move.m1 = this.getLength(offsetPt.x, offsetPt.y);
+            // move.m2 = this.getLength(offsetPt.x - motDistance, offsetPt.y);
             
-            var ptDist = this.getLength(this.penState.x - pt.x - this.offsetX, this.penState.y - pt.y - this.offsetY);
+            var ptDist = this.getLength(this.penState.x - offsetPt.x - this.offsetX, this.penState.y - pt.y - this.offsetY);
             // console.log("ptDist: ", ptDist);0
             // console.log("m1: ", move.m1);
             // console.log("m2: ", move.m2);
@@ -983,8 +979,8 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             // console.log("feedrate: ", move.feedrate);
 
             // update status
-            this.penState.x = pt.x;
-            this.penState.y = pt.y;
+            this.penState.x = offsetPt.x;
+            this.penState.y = offsetPt.y;
           
             return move;
         },
