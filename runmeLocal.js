@@ -1223,9 +1223,9 @@ var pushToGithub = function() {
 
 var pushToGithubAsync = function() {
   var exec = require('child_process').exec;
- 
+  var stdout = "";
   exec('git add *', function(error1, stdout1, stderr1) {
-    var stdout = "stdout:";
+    stdout = "stdout:";
     stdout += stdout1;
     stdout += "stderr:";
     stdout += stderr1;
