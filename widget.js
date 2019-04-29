@@ -900,7 +900,9 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             var servoUp = this.options.servoup;
             var servoDown = this.options.servodown;
 
-            var code = "";
+            // Init statement comes here
+            var code = "G21\n";
+
             for (var i in pts) {
                 //convert coordination to motor movement
                 var param = this.getNextMove(pts[i]);
@@ -984,10 +986,15 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
           
             return move;
         },
+        /**
+         * Only a small help function */
         getLength: function(locX, locY){
             var length = Math.sqrt(locX * locX + locY * locY);
             return length;
         },
+        /**
+         * another small help function
+         */
         getDelta: function(nowX, nowY, nextX, nextY) {
             var nowL = this.getLength(nowX, nowY);
             var nextL = this.getLength(nextX, nextY);
