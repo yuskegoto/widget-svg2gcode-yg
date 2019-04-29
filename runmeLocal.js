@@ -1225,19 +1225,32 @@ var pushToGithubAsync = function() {
   var exec = require('child_process').exec;
  
   exec('git add *', function(error1, stdout1, stderr1) {
-    // command output is in stdout
+    var stdout = "stdout:";
+    stdout += stdout1;
+    stdout += "stderr:";
+    stdout += stderr1;
+    stdout += "\n";
     console.log("stdout:", stdout1, "stderr:", stderr1);
     // exec('bash -c "git commit -m \\"Made some changes to ChiliPeppr test workspace\\""', function(error2, stdout2, stderr2) {
     exec('git commit -m "Auto commit for Pendeograph workspace"', function (error2, stdout2, stderr2) {
       // command output is in stdout
+      stdout += stdout2;
+      stdout += "stderr:";
+      stdout += stderr2;
+      stdout += "\n";  
       console.log("stdout:", stdout2, "stderr:", stderr2);
       exec('git push', function(error3, stdout3, stderr3) {
         // command output is in stdout
+        stdout += stdout3;
+        stdout += "stderr:";
+        stdout += stderr3;
+        stdout += "\n"; 
         console.log("stdout:", stdout3, "stderr:", stderr3);
       });
     });
   });
   console.log("Pushed to github");
+  return stdout;
 }
 
 var pullFromGithubSync = function() {
