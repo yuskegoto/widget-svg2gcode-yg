@@ -956,8 +956,9 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             // move.m1 = this.getLength(offsetPt.x, offsetPt.y);
             // move.m2 = this.getLength(offsetPt.x - motDistance, offsetPt.y);
             
-            var ptDist = this.getLength(this.penState.x - offsetPt.x - this.offsetX, this.penState.y - pt.y - this.offsetY);
-            // console.log("ptDist: ", ptDist);0
+            // ptDist is distance between current position and next point on physical plane
+            var ptDist = this.getLength(this.penState.x - offsetPt.x, this.penState.y - offsetPt.y);
+            console.log("ptDist: ", ptDist);
             // console.log("m1: ", move.m1);
             // console.log("m2: ", move.m2);
             // console.log("ptX: ", pt.x);
@@ -965,7 +966,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             // console.log("penStateX: ", this.penState.x);
             // console.log("penStateY: ", this.penState.y);
 
-            //speed is mm/min
+            // Speed calcuration, this is necessary to keep the pen module's speed constant, unit: minute
             var movingTime = ptDist / spd;
             // imaginal moving distance on control plane to get motor speed for GRBL
             var motorDist12 = this.getLength(move.m1, move.m2);
@@ -976,9 +977,9 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             else {
                 move.feedrate = motorDist12 / movingTime;
             }
-            // console.log("movingTime: ", movingTime);
-            // console.log("motorDist: ", motorDist12);
-            // console.log("feedrate: ", move.feedrate);
+            console.log("movingTime: ", movingTime, "min");
+            console.log("motorDist: ", motorDist12);
+            console.log("feedrate: ", move.feedrate);
 
             // update status
             this.penState.x = offsetPt.x;
