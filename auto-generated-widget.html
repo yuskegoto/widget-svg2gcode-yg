@@ -1024,7 +1024,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                 spd = parseInt(this.options.feedratemove, 10);
             }
 
-            var offsetPt = {x: pt.x + this.offsetX, y: pt.y + this.offsetY};
+            var offsetPt = {x: pt.x + this.offsetX, y: - pt.y + this.offsetY};
 
             // get movement value for each motors: differential version (delta)
             move.m1 = this.getDelta(this.penState.x, this.penState.y, offsetPt.x, offsetPt.y);
@@ -1335,7 +1335,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             // since svg has top left as 0,0 we need to flip
             // the whole thing on the x axis to get 0,0
             // on the lower left like gcode uses
-            svgGroup.scale.y = -1;
+            // svgGroup.scale.y = -1;
 
             // shift whole thing so it sits at 0,0
             

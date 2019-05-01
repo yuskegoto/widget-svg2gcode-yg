@@ -952,7 +952,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                 spd = parseInt(this.options.feedratemove, 10);
             }
 
-            var offsetPt = {x: pt.x + this.offsetX, y: pt.y + this.offsetY};
+            var offsetPt = {x: pt.x + this.offsetX, y: - pt.y + this.offsetY};
 
             // get movement value for each motors: differential version (delta)
             move.m1 = this.getDelta(this.penState.x, this.penState.y, offsetPt.x, offsetPt.y);
@@ -964,7 +964,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             
             // ptDist is distance between current position and next point on physical plane
             var ptDist = this.getLength(this.penState.x - offsetPt.x, this.penState.y - offsetPt.y);
-            console.log("ptDist: ", ptDist);
+            // console.log("ptDist: ", ptDist);
             // console.log("m1: ", move.m1);
             // console.log("m2: ", move.m2);
             // console.log("ptX: ", pt.x);
@@ -983,9 +983,9 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             else {
                 move.feedrate = motorDist12 / movingTime;
             }
-            console.log("movingTime: ", movingTime, "min");
-            console.log("motorDist: ", motorDist12);
-            console.log("feedrate: ", move.feedrate);
+            // console.log("movingTime: ", movingTime, "min");
+            // console.log("motorDist: ", motorDist12);
+            // console.log("feedrate: ", move.feedrate);
 
             // update status
             this.penState.x = offsetPt.x;
