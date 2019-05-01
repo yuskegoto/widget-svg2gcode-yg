@@ -811,7 +811,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
 
             var txtGrp = this.svgGroup;
 
-            // var that = this;
+            var that = this;
             // container for coordination
             var pts = [];
 
@@ -862,6 +862,11 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                             previousPt = worldPt;
                         }
                     }
+                    // return to the initial point
+                    that.updateOffset();
+                    var pt = {x: 0, y: 0, write: false};
+                    pts.push(pt);
+
                     console.log("dist: ", totalLength);
                 }
             });
@@ -933,8 +938,6 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                 code += param.feedrate.toFixed(3);
                 code += "\n";
             }
-            // hold up the pen
-            code += "M3 S" + servoUp + "\n";
             return code;
         },
 
@@ -1263,7 +1266,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             // since svg has top left as 0,0 we need to flip
             // the whole thing on the x axis to get 0,0
             // on the lower left like gcode uses
-            svgGroup.scale.y = -1;
+            // svgGroup.scale.y = -1;
 
             // shift whole thing so it sits at 0,0
             
