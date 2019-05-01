@@ -913,6 +913,11 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             code += "G91\n";
 
             for (var i in pts) {
+                // console.log("PenX: ", this.penState.x);
+                // console.log("PenY: ", this.penState.y);
+                // console.log("PtX: ", pts[i].x);
+                // console.log("PtY: ", pts[i].y);
+
                 //convert coordination to motor movement
                 var param = this.getNextMove(pts[i]);
                 // console.log(param);
@@ -955,7 +960,7 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                 spd = parseInt(this.options.feedratemove, 10);
             }
 
-            var offsetPt = {x: pt.x + this.offsetX, y: - pt.y + this.offsetY};
+            var offsetPt = {x: pt.x + this.offsetX, y: pt.y + this.offsetY};
 
             // get movement value for each motors: differential version (delta)
             move.m1 = this.getDelta(this.penState.x, this.penState.y, offsetPt.x, offsetPt.y);
