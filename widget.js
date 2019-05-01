@@ -902,6 +902,8 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
 
             // Init statement comes here
             var code = "G21\n";
+            // set to relative mode
+            code += "G91\n";
 
             for (var i in pts) {
                 //convert coordination to motor movement
