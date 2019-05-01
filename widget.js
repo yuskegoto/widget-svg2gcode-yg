@@ -893,6 +893,8 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
             // var offsetY = parseInt(this.options.starty, 10);
             this.updateOffset();
 
+            // load pen condition
+            // set pen state to initial position
             this.penState.x = this.offsetX;
             this.penState.y = this.offsetY;
             this.penState.write = false;
@@ -931,6 +933,8 @@ cpdefine("inline:com-zipwhip-widget-svg2gcode-yg", ["chilipeppr_ready", "Snap", 
                 code += param.feedrate.toFixed(3);
                 code += "\n";
             }
+            // hold up the pen
+            code += "M3 S" + servoUp + "\n";
             return code;
         },
 
