@@ -208,8 +208,8 @@ var widgetDocs = {};
 var init = function() {
   github = getGithubUrl();
   widgetUrl = github.rawurl.replace(/\/[\s\S]*$/i, "/" + fileHtmlPath);
-  testUrl = github.rawurl;
-  testUrlNoSsl = github.rawurl.replace(RegExp('https'), 'http');
+  testUrl = github.testurl;
+  testUrlNoSsl = github.testurl.replace(RegExp('https'), 'http');
   editUrl = github.url;
   localTestUrl = 'http://localhost:' + portNo + '/' + fileHtmlPath;
 }
@@ -1402,7 +1402,9 @@ var getGithubUrl = function(callback) {
   // var rawurl = url.replace(re, "https://");
   re = RegExp(userName + '/');
   var repoName = url.replace(re, '');
-  var rawurl = 'https://' + userName + '.github.io/' + repoName;
+  var testurl = 'https://' + userName + '.github.io/' + repoName + "/" + fileHtmlPath;
+  var rawurl = 'https://raw.githubusercontent.com/' + userName + "/" + repoName + "/master";
+
   rawurl += '/' + fileAutoGeneratePath;
 
   url = "https://github.com/" + url;
@@ -1413,7 +1415,8 @@ var getGithubUrl = function(callback) {
 
   var ret = {
     url: url,
-    rawurl : rawurl
+    rawurl : rawurl,
+    testurl : testurl
   };
   
   // console.log("ret:", ret);
